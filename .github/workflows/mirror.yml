@@ -30,11 +30,20 @@ jobs:
         run: pnpm lib:build
         working-directory: packages/mantine-react-table
 
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.MIRROR_APP_ID }}
+          private-key: ${{ secrets.MIRROR_APP_PRIVATE_KEY }}
+          owner: CareHarmony
+          repositories: mantine-react-table-ch
+
       - name: Checkout target repo
         uses: actions/checkout@v4
         with:
           repository: CareHarmony/mantine-react-table-ch
-          token: ${{ secrets.MIRROR_REPO_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
           path: _mirror
 
       - name: Sync package to target repo
