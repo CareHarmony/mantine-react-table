@@ -1,0 +1,59 @@
+name: Mirror Package to CareHarmony Repo
+
+on:
+  push:
+    branches:
+      - 'v4'
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source repo
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build library
+        run: pnpm lib:build
+        working-directory: packages/mantine-react-table
+
+      - name: Checkout target repo
+        uses: actions/checkout@v4
+        with:
+          repository: CareHarmony/mantine-react-table-ch
+          token: ${{ secrets.MIRROR_REPO_TOKEN }}
+          path: _mirror
+
+      - name: Sync package to target repo
+        run: |
+          # Remove old contents from mirror (except .git)
+          find _mirror -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+
+          # Copy package contents to mirror root
+          cp -r packages/mantine-react-table/* _mirror/
+          cp -r packages/mantine-react-table/.storybook _mirror/ 2>/dev/null || true
+
+          # Copy root README into the mirror
+          cp README.md _mirror/README.md
+
+      - name: Commit and push to target repo
+        working-directory: _mirror
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Mirror from ${{ github.repository }}@${GITHUB_SHA::7}" || exit 0
+          git push
