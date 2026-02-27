@@ -23,7 +23,7 @@ import {
   type MRT_RowData,
   type MRT_TableInstance,
 } from '../../types';
-import { parseFromValuesOrFunc } from '../../utils/utils';
+import { assignRef, parseFromValuesOrFunc } from '../../utils/utils';
 
 interface Props<TData extends MRT_RowData> extends TextInputProps {
   header: MRT_Header<TData>;
@@ -305,9 +305,7 @@ export const MRT_FilterTextInput = <TData extends MRT_RowData>({
           if (node) {
             filterInputRefs.current[`${column.id}-${rangeFilterIndex ?? 0}`] =
               node;
-            if (multiSelectProps.ref) {
-              multiSelectProps.ref.current = node;
-            }
+            assignRef(multiSelectProps.ref, node);
           }
         }}
         rightSection={
@@ -336,9 +334,7 @@ export const MRT_FilterTextInput = <TData extends MRT_RowData>({
           if (node) {
             filterInputRefs.current[`${column.id}-${rangeFilterIndex ?? 0}`] =
               node;
-            if (selectProps.ref) {
-              selectProps.ref.current = node;
-            }
+            assignRef(selectProps.ref, node);
           }
         }}
         style={commonProps.style}
@@ -360,9 +356,7 @@ export const MRT_FilterTextInput = <TData extends MRT_RowData>({
           if (node) {
             filterInputRefs.current[`${column.id}-${rangeFilterIndex ?? 0}`] =
               node;
-            if (dateInputProps.ref) {
-              dateInputProps.ref.current = node;
-            }
+            assignRef(dateInputProps.ref, node);
           }
         }}
         style={commonProps.style}
@@ -383,9 +377,7 @@ export const MRT_FilterTextInput = <TData extends MRT_RowData>({
           if (node) {
             filterInputRefs.current[`${column.id}-${rangeFilterIndex ?? 0}`] =
               node;
-            if (autoCompleteProps.ref) {
-              autoCompleteProps.ref.current = node;
-            }
+            assignRef(autoCompleteProps.ref, node);
           }
         }}
         style={commonProps.style}
@@ -405,9 +397,7 @@ export const MRT_FilterTextInput = <TData extends MRT_RowData>({
         if (node) {
           filterInputRefs.current[`${column.id}-${rangeFilterIndex ?? 0}`] =
             node;
-          if (textInputProps.ref) {
-            textInputProps.ref.current = node;
-          }
+          assignRef(textInputProps.ref, node);
         }
       }}
       style={commonProps.style}

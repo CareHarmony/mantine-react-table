@@ -16,7 +16,7 @@ import {
   type MRT_RowData,
   type MRT_TableInstance,
 } from '../../types';
-import { parseFromValuesOrFunc } from '../../utils/utils';
+import { assignRef, parseFromValuesOrFunc } from '../../utils/utils';
 import { MRT_ToolbarAlertBanner } from '../toolbar/MRT_ToolbarAlertBanner';
 
 interface Props<TData extends MRT_RowData> extends TableTheadProps {
@@ -68,10 +68,7 @@ export const MRT_TableHead = <TData extends MRT_RowData>({
       }
       ref={(ref: HTMLTableSectionElement) => {
         tableHeadRef.current = ref;
-        if (tableHeadProps?.ref) {
-          // @ts-ignore
-          tableHeadProps.ref.current = ref;
-        }
+        assignRef(tableHeadProps?.ref, ref);
       }}
     >
       {positionToolbarAlertBanner === 'head-overlay' &&

@@ -1,8 +1,8 @@
 import {
   type Dispatch,
   type HTMLProps,
-  type MutableRefObject,
   type ReactNode,
+  type Ref,
   type RefObject,
   type SetStateAction,
 } from 'react';
@@ -92,7 +92,7 @@ export type Xor<A, B> =
   | Prettify<{ [k in keyof B]?: never } & A>;
 
 export type HTMLPropsRef<T extends HTMLElement> = {
-  ref?: MutableRefObject<null | T> | null;
+  ref?: Ref<T> | null;
 } & Omit<
   HTMLProps<T>,
   'color' | 'data' | 'label' | 'ref' | 'size' | 'style' | 'type'
@@ -287,17 +287,17 @@ export type MRT_TableInstance<TData extends MRT_RowData> = {
   getTopRows: () => MRT_Row<TData>[];
   options: MRT_StatefulTableOptions<TData>;
   refs: {
-    bottomToolbarRef: MutableRefObject<HTMLDivElement | null>;
-    editInputRefs: MutableRefObject<Record<string, HTMLInputElement>>;
-    filterInputRefs: MutableRefObject<Record<string, HTMLInputElement>>;
-    lastSelectedRowId: MutableRefObject<null | string>;
-    searchInputRef: MutableRefObject<HTMLInputElement | null>;
-    tableContainerRef: MutableRefObject<HTMLDivElement | null>;
-    tableFooterRef: MutableRefObject<HTMLTableSectionElement | null>;
-    tableHeadCellRefs: MutableRefObject<Record<string, HTMLTableCellElement>>;
-    tableHeadRef: MutableRefObject<HTMLTableSectionElement | null>;
-    tablePaperRef: MutableRefObject<HTMLDivElement | null>;
-    topToolbarRef: MutableRefObject<HTMLDivElement | null>;
+    bottomToolbarRef: RefObject<HTMLDivElement | null>;
+    editInputRefs: RefObject<Record<string, HTMLInputElement>>;
+    filterInputRefs: RefObject<Record<string, HTMLInputElement>>;
+    lastSelectedRowId: RefObject<null | string>;
+    searchInputRef: RefObject<HTMLInputElement | null>;
+    tableContainerRef: RefObject<HTMLDivElement | null>;
+    tableFooterRef: RefObject<HTMLTableSectionElement | null>;
+    tableHeadCellRefs: RefObject<Record<string, HTMLTableCellElement>>;
+    tableHeadRef: RefObject<HTMLTableSectionElement | null>;
+    tablePaperRef: RefObject<HTMLDivElement | null>;
+    topToolbarRef: RefObject<HTMLDivElement | null>;
   };
   setColumnFilterFns: Dispatch<SetStateAction<MRT_ColumnFilterFnsState>>;
   setCreatingRow: Dispatch<SetStateAction<MRT_Row<TData> | null | true>>;
@@ -424,7 +424,7 @@ export type MRT_ColumnDef<TData extends MRT_RowData, TValue = unknown> = {
     renderedColumnIndex?: number;
     renderedRowIndex?: number;
     row: MRT_Row<TData>;
-    rowRef?: RefObject<HTMLTableRowElement>;
+    rowRef?: RefObject<HTMLTableRowElement | null>;
     table: MRT_TableInstance<TData>;
   }) => ReactNode;
   /**
@@ -775,7 +775,7 @@ export type MRT_TableOptions<TData extends MRT_RowData> = {
    * @link https://www.mantine-react-table.com/docs/api/column-options
    */
   columns: MRT_ColumnDef<TData>[];
-  columnVirtualizerInstanceRef?: MutableRefObject<null | Virtualizer<
+  columnVirtualizerInstanceRef?: RefObject<null | Virtualizer<
     HTMLDivElement,
     HTMLTableCellElement
   >>;
@@ -1246,7 +1246,7 @@ export type MRT_TableOptions<TData extends MRT_RowData> = {
     | 'sticky'
     | 'top'
     | 'top-and-bottom';
-  rowVirtualizerInstanceRef?: MutableRefObject<null | Virtualizer<
+  rowVirtualizerInstanceRef?: RefObject<null | Virtualizer<
     HTMLDivElement,
     HTMLTableRowElement
   >>;

@@ -9,7 +9,7 @@ import { Box, type BoxProps, LoadingOverlay } from '@mantine/core';
 import { MRT_Table } from './MRT_Table';
 
 import { type MRT_RowData, type MRT_TableInstance } from '../../types';
-import { parseFromValuesOrFunc } from '../../utils/utils';
+import { assignRef, parseFromValuesOrFunc } from '../../utils/utils';
 import { MRT_EditRowModal } from '../modals/MRT_EditRowModal';
 
 const useIsomorphicLayoutEffect =
@@ -87,10 +87,7 @@ export const MRT_TableContainer = <TData extends MRT_RowData>({
       ref={(node: HTMLDivElement) => {
         if (node) {
           tableContainerRef.current = node;
-          if (tableContainerProps?.ref) {
-            //@ts-ignore
-            tableContainerProps.ref.current = node;
-          }
+          assignRef(tableContainerProps?.ref, node);
         }
       }}
     >
