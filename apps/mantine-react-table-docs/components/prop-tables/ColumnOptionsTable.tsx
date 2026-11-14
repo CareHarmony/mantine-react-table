@@ -1,6 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { MantineReactTable, type MRT_ColumnDef } from 'mantine-react-table-ng';
+import {
+  MantineReactTable,
+  type MRT_ColumnDef,
+  type MRT_ColumnPinningState,
+} from 'mantine-react-table-ng';
 import { Anchor, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { type ColumnOption, columnOptions } from './columnOptions';
@@ -97,20 +101,20 @@ const ColumnOptionsTable = ({ onlyOptions }: Props) => {
     [],
   );
 
-  const [columnPinning, setColumnPinning] = useState({});
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      if (isDesktop) {
-        setColumnPinning({
-          left: ['mrt-row-expand', 'mrt-row-numbers', 'columnOption'],
-          right: ['link'],
-        });
-      } else {
-        setColumnPinning({});
-      }
-    }
-  }, [isDesktop]);
+  //the key columns are pinned on desktop until the user changes the pinning
+  const defaultColumnPinning = useMemo<MRT_ColumnPinningState>(
+    () =>
+      isDesktop
+        ? {
+            left: ['mrt-row-expand', 'mrt-row-numbers', 'columnOption'],
+            right: ['link'],
+          }
+        : {},
+    [isDesktop],
+  );
+  const [userColumnPinning, setUserColumnPinning] =
+    useState<MRT_ColumnPinningState>();
+  const columnPinning = userColumnPinning ?? defaultColumnPinning;
 
   const data = useMemo(() => {
     if (onlyOptions) {
@@ -164,7 +168,11 @@ const ColumnOptionsTable = ({ onlyOptions }: Props) => {
         </Text>
       )}
       rowNumberDisplayMode="static"
-      onColumnPinningChange={setColumnPinning}
+      onColumnPinningChange={(updater) =>
+        setUserColumnPinning(
+          typeof updater === 'function' ? updater(columnPinning) : updater,
+        )
+      }
       state={{ columnPinning }}
     />
   );

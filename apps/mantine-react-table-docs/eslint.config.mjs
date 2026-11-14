@@ -22,8 +22,6 @@ const config = [
       '@typescript-eslint/no-require-imports': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
       'react/jsx-no-target-blank': ['error', { allowReferrer: true }],
-      //the docs and examples load browser-only data (localStorage, generated rows) in a mount effect to keep server and client HTML equal
-      'react-hooks/set-state-in-effect': 'off',
     },
   },
   {

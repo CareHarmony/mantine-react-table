@@ -154,4 +154,24 @@ describe(`docs examples [compiler=${__MRT_REACT_COMPILER__}, target=${__MRT_TEST
       );
     });
   });
+
+  it('persistent-state restores the saved sorting after a remount', async () => {
+    const load = examples.find(([name]) => name === 'persistent-state')![1];
+    const first = await renderExample(load);
+    await first.user.click(
+      first.container.querySelector('.mrt-table-head-sort-button')!,
+    );
+    await waitFor(() =>
+      expect(sessionStorage.getItem('mrt_sorting_table_1')).toContain('desc'),
+    );
+    first.unmount();
+
+    const second = await renderExample(load);
+    expect(
+      second.container.querySelector(
+        '.mrt-table-head-sort-button[data-sorted]',
+      ),
+    ).toBeInTheDocument();
+    expect(second.errors.mock.calls).toEqual([]);
+  });
 });

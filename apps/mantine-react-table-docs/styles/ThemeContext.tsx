@@ -1,10 +1,11 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useState } from 'react';
 import {
   type MantineColor,
   MantineProvider,
   createTheme,
   useMantineColorScheme,
 } from '@mantine/core';
+import { useLocalStorage } from '@mantine/hooks';
 import {
   CodeHighlightAdapterProvider,
   createHighlightJsAdapter,
@@ -36,21 +37,14 @@ const ThemeContext = createContext<{
 }>({} as any);
 
 export const ThemeContextProvider = ({ children }) => {
-  const [darkDark, setDarkDark] = useState<boolean>(true);
+  //read after hydration, so the server and the first client render match
+  const [darkDark, setDarkDark] = useLocalStorage<boolean>({
+    defaultValue: false,
+    getInitialValueInEffect: true,
+    key: 'darkDark',
+  });
   const [primaryColor, setPrimaryColor] = useState<MantineColor>('teal');
   const [primaryShade, setPrimaryShade] = useState<MantineShade>(7);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setDarkDark(localStorage.getItem('darkDark') === 'true');
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('darkDark', darkDark.toString());
-    }
-  }, [darkDark]);
 
   return (
     <MantineProvider

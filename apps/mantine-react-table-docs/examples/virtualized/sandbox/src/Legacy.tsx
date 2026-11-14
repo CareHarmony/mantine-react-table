@@ -92,16 +92,9 @@ const Example = () => {
   //optionally access the underlying virtualizer instance
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
-  const [data, setData] = useState<Person[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  //create the 10,000 rows once, when the component mounts
+  const [data] = useState<Person[]>(() => makeData(10_000));
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setData(makeData(10_000));
-      setIsLoading(false);
-    }
-  }, []);
 
   useEffect(() => {
     try {
@@ -126,7 +119,7 @@ const Example = () => {
       enableRowVirtualization
       mantineTableContainerProps={{ style: { maxHeight: '600px' } }}
       onSortingChange={setSorting}
-      state={{ isLoading, sorting }}
+      state={{ sorting }}
       rowVirtualizerInstanceRef={rowVirtualizerInstanceRef} //optional
       rowVirtualizerOptions={{ overscan: 5 }} //optionally customize the row virtualizer
       columnVirtualizerOptions={{ overscan: 2 }} //optionally customize the column virtualizer
