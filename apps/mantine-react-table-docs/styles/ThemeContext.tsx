@@ -5,8 +5,26 @@ import {
   createTheme,
   useMantineColorScheme,
 } from '@mantine/core';
-import { type MantineShade } from 'mantine-react-table';
+import {
+  CodeHighlightAdapterProvider,
+  createHighlightJsAdapter,
+} from '@mantine/code-highlight';
+import hljs from 'highlight.js/lib/core';
+import bash from 'highlight.js/lib/languages/bash';
+import css from 'highlight.js/lib/languages/css';
+import javascript from 'highlight.js/lib/languages/javascript';
+import typescript from 'highlight.js/lib/languages/typescript';
+import { type MantineShade } from 'mantine-react-table-ng';
 import { useContext } from 'react';
+
+// highlight.js has no JSX grammar. Its JavaScript and TypeScript grammars parse JSX.
+hljs.registerLanguage('bash', bash);
+hljs.registerLanguage('css', css);
+hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('typescript', typescript);
+hljs.registerAliases(['js', 'jsx'], { languageName: 'javascript' });
+hljs.registerAliases(['ts', 'tsx'], { languageName: 'typescript' });
+const highlightJsAdapter = createHighlightJsAdapter(hljs);
 
 const ThemeContext = createContext<{
   darkDark: boolean;
@@ -109,7 +127,9 @@ export const ThemeContextProvider = ({ children }) => {
           setPrimaryShade,
         }}
       >
-        {children}
+        <CodeHighlightAdapterProvider adapter={highlightJsAdapter}>
+          {children}
+        </CodeHighlightAdapterProvider>
       </ThemeContext.Provider>
     </MantineProvider>
   );

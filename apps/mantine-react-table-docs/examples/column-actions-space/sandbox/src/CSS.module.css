@@ -1,0 +1,4 @@
+/* push the column actions button to the right edge of each header cell */
+.headCell :global(.mrt-table-head-cell-content) {
+  justify-content: space-between;
+}

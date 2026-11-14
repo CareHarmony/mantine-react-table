@@ -5,8 +5,8 @@ import { defineConfig } from 'vitest/config';
 /**
  * MRT_REACT_COMPILER
  *   off      - no React Compiler (default)
- *   consumer - compile only the test files and fixtures, like an app that
- *              installs the package from node_modules
+ *   consumer - compile only the test files, fixtures and docs examples, like
+ *              an app that installs the package from node_modules
  *   all      - also compile the library code under test, like an app that
  *              transpiles the package (Next.js transpilePackages, monorepo aliases)
  * MRT_TEST_TARGET
@@ -21,11 +21,25 @@ const root = toPosix(fileURLToPath(new URL('.', import.meta.url)));
 const entry =
   target === 'dist' ? `${root}dist/index.esm.mjs` : `${root}src/index.ts`;
 
+const locale =
+  target === 'dist'
+    ? `${root}locales/$1/index.esm.mjs`
+    : `${root}src/locales/$1.ts`;
+
+const styles =
+  target === 'dist'
+    ? `${root}styles.css`
+    : `${root}tests/unit/fixtures/empty.css`;
+
+//the docs examples are consumer code: tests/unit/examples.test.tsx renders all of them
+const consumerCode = ['/tests/unit/', '/mantine-react-table-docs/examples/'];
+
 const shouldCompile = (id: string) => {
   const file = toPosix(id);
   if (file.includes('/node_modules/')) return false;
   if (compilerMode === 'all') return true;
-  if (compilerMode === 'consumer') return file.includes('/tests/unit/');
+  if (compilerMode === 'consumer')
+    return consumerCode.some((dir) => file.includes(dir));
   return false;
 };
 
@@ -45,7 +59,23 @@ export default defineConfig({
     }),
   ],
   resolve: {
-    alias: [{ find: /^mantine-react-table-ng$/, replacement: entry }],
+    alias: [
+      { find: /^mantine-react-table-ng$/, replacement: entry },
+      {
+        find: /^mantine-react-table-ng\/locales\/([^/]+)$/,
+        replacement: locale,
+      },
+      { find: /^mantine-react-table-ng\/styles\.css$/, replacement: styles },
+    ],
+    //the docs examples resolve packages from the docs app's node_modules
+    dedupe: [
+      '@mantine/core',
+      '@mantine/dates',
+      '@mantine/hooks',
+      '@tabler/icons-react',
+      'react',
+      'react-dom',
+    ],
   },
   test: {
     css: { modules: { classNameStrategy: 'non-scoped' } },

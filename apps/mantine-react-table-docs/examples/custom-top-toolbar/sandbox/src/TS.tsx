@@ -1,6 +1,6 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css'; //if using mantine date picker features
-import 'mantine-react-table/styles.css'; //make sure MRT styles were imported in your app root (once)
+import 'mantine-react-table-ng/styles.css'; //make sure MRT styles were imported in your app root (once)
 import { useMemo } from 'react';
 import {
   MRT_ToggleDensePaddingButton,
@@ -8,7 +8,7 @@ import {
   MantineReactTable,
   type MRT_ColumnDef,
   useMantineReactTable,
-} from 'mantine-react-table';
+} from 'mantine-react-table-ng';
 import { Box, Button, ActionIcon, Flex } from '@mantine/core';
 import { IconPrinter } from '@tabler/icons-react';
 import { data, type Person } from './makeData';

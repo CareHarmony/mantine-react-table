@@ -38,6 +38,12 @@ jobs:
         run: pnpm lib:build
         working-directory: packages/mantine-react-table
 
+      # The docs app and its 109 example sandboxes import the built library.
+      # `next build` also typechecks them.
+      - name: Build docs app and typecheck examples
+        run: pnpm docs:build
+        working-directory: apps/mantine-react-table-docs
+
       # Runs the unit tests four times: no React Compiler, compiler on consumer
       # code, compiler on library source, and compiler on the built bundle.
       - name: Unit tests in all React Compiler modes

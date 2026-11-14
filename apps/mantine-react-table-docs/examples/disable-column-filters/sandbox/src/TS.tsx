@@ -1,10 +1,28 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css'; //if using mantine date picker features
-import 'mantine-react-table/styles.css'; //make sure MRT styles were imported in your app root (once)
+import 'mantine-react-table-ng/styles.css'; //make sure MRT styles were imported in your app root (once)
 import { useMemo } from 'react';
-import { MantineReactTable, type MRT_ColumnDef } from 'mantine-react-table';
+import { MantineReactTable, type MRT_ColumnDef } from 'mantine-react-table-ng';
 
 const Example = () => {
+  const data = useMemo(
+    () => [
+      {
+        id: 1,
+        firstName: 'Hugh',
+        middleName: 'Jay',
+        lastName: 'Mungus',
+      },
+      {
+        id: 2,
+        firstName: 'Leroy',
+        middleName: 'Leroy',
+        lastName: 'Jenkins',
+      },
+    ],
+    [],
+  );
+
   const columns = useMemo(
     () =>
       [
@@ -27,24 +45,6 @@ const Example = () => {
           header: 'Last Name',
         },
       ] as MRT_ColumnDef<(typeof data)[0]>[],
-    [],
-  );
-
-  const data = useMemo(
-    () => [
-      {
-        id: 1,
-        firstName: 'Hugh',
-        middleName: 'Jay',
-        lastName: 'Mungus',
-      },
-      {
-        id: 2,
-        firstName: 'Leroy',
-        middleName: 'Leroy',
-        lastName: 'Jenkins',
-      },
-    ],
     [],
   );
 

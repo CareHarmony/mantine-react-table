@@ -1,8 +1,9 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css'; //if using mantine date picker features
-import 'mantine-react-table/styles.css'; //make sure MRT styles were imported in your app root (once)
+import 'mantine-react-table-ng/styles.css'; //make sure MRT styles were imported in your app root (once)
 import { useMemo } from 'react';
-import { MantineReactTable, type MRT_ColumnDef } from 'mantine-react-table';
+import { MantineReactTable, type MRT_ColumnDef } from 'mantine-react-table-ng';
+import classes from './CSS.module.css';
 import { data } from './makeData';
 
 const Example = () => {
@@ -28,13 +29,7 @@ const Example = () => {
     <MantineReactTable
       columns={columns}
       data={data}
-      mantineTableHeadCellProps={{
-        style: {
-          '& .mantine-TableHeadCell-Content': {
-            justifyContent: 'space-between',
-          },
-        },
-      }}
+      mantineTableHeadCellProps={{ className: classes.headCell }}
     />
   );
 };
