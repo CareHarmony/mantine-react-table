@@ -78,6 +78,14 @@ export default defineConfig({
     ],
   },
   test: {
+    //`pnpm test:coverage` measures the library source with the compiler off
+    coverage: {
+      exclude: ['src/locales/**', 'src/**/*.d.ts', 'src/types.ts'],
+      include: ['src/**/*.{ts,tsx}'],
+      provider: 'v8',
+      reporter: ['text-summary', 'html', 'json-summary'],
+      reportsDirectory: './coverage',
+    },
     css: { modules: { classNameStrategy: 'non-scoped' } },
     environment: 'jsdom',
     // The module cache is keyed by file, so it would serve modules transformed in
