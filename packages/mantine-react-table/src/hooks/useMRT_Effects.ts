@@ -10,6 +10,7 @@ import { getCanRankRows } from '../utils/row.utils';
 
 export const useMRT_Effects = <TData extends MRT_RowData>(
   table: MRT_TableInstance<TData>,
+  rerenderTable?: () => void,
 ) => {
   const {
     getIsSomeRowsPinned,
@@ -31,7 +32,9 @@ export const useMRT_Effects = <TData extends MRT_RowData>(
   const totalColumnCount = table.options.columns.length;
   const totalRowCount = rowCount ?? getPrePaginationRowModel().rows.length;
 
-  const rerender = useReducer(() => ({}), {})[1];
+  //`rerenderTable` also changes the table reference, which compiled consumer code needs
+  const rerenderSelf = useReducer(() => ({}), {})[1];
+  const rerender = rerenderTable ?? rerenderSelf;
   const initialBodyHeight = useRef<string | undefined>(undefined);
   const previousTop = useRef<number | undefined>(undefined);
 

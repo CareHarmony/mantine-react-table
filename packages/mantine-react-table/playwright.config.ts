@@ -23,6 +23,7 @@ export default defineConfig({
   snapshotPathTemplate: '{snapshotDir}/{arg}-{projectName}-{platform}{ext}',
 
   testDir: './tests',
+  testMatch: '**/*.spec.ts',
 
   // Per-story timeout (some tables with virtualization or heavy data may take longer)
   timeout: 45_000,
