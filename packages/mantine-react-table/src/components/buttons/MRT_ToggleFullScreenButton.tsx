@@ -1,3 +1,5 @@
+'use no memo';
+
 import { useState } from 'react';
 
 import { ActionIcon, type ActionIconProps, Tooltip } from '@mantine/core';

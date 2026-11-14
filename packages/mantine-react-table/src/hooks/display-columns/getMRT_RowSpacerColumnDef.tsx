@@ -1,3 +1,5 @@
+'use no memo';
+
 import { MRT_DefaultDisplayColumn } from '../useMRT_TableOptions';
 
 import {

@@ -1,3 +1,5 @@
+'use no memo';
+
 import { type MouseEvent, useState } from 'react';
 
 import { type RowPinningPosition } from '@tanstack/react-table';

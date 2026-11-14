@@ -1,3 +1,5 @@
+'use no memo';
+
 import clsx from 'clsx';
 
 import classes from './MRT_TableFooterRow.module.css';
@@ -15,6 +17,7 @@ import {
   type MRT_VirtualItem,
 } from '../../types';
 import { parseFromValuesOrFunc } from '../../utils/utils';
+import { getVirtualGroupHeaders } from '../../utils/virtualization.utils';
 
 interface Props<TData extends MRT_RowData> extends TableTrProps {
   columnVirtualizer?: MRT_ColumnVirtualizer;
@@ -47,6 +50,12 @@ export const MRT_TableFooterRow = <TData extends MRT_RowData>({
     return null;
   }
 
+  const virtualGroupFooters = getVirtualGroupHeaders({
+    headers: footerGroup.headers,
+    table,
+    virtualColumns,
+  });
+
   const tableRowProps = {
     ...parseFromValuesOrFunc(mantineTableFooterRowProps, {
       footerGroup,
@@ -66,25 +75,34 @@ export const MRT_TableFooterRow = <TData extends MRT_RowData>({
       {virtualPaddingLeft ? (
         <Box component="th" display="flex" w={virtualPaddingLeft} />
       ) : null}
-      {(virtualColumns ?? footerGroup.headers).map(
-        (footerOrVirtualFooter, renderedColumnIndex) => {
-          let footer = footerOrVirtualFooter as MRT_Header<TData>;
-          if (columnVirtualizer) {
-            renderedColumnIndex = (footerOrVirtualFooter as MRT_VirtualItem)
-              .index;
-            footer = footerGroup.headers[renderedColumnIndex];
-          }
+      {virtualGroupFooters?.map(({ header, index, style }) => (
+        <MRT_TableFooterCell
+          footer={header}
+          key={header.id}
+          renderedColumnIndex={index}
+          style={style}
+          table={table}
+        />
+      )) ??
+        (virtualColumns ?? footerGroup.headers).map(
+          (footerOrVirtualFooter, renderedColumnIndex) => {
+            let footer = footerOrVirtualFooter as MRT_Header<TData>;
+            if (columnVirtualizer) {
+              renderedColumnIndex = (footerOrVirtualFooter as MRT_VirtualItem)
+                .index;
+              footer = footerGroup.headers[renderedColumnIndex];
+            }
 
-          return (
-            <MRT_TableFooterCell
-              footer={footer}
-              key={footer.id}
-              renderedColumnIndex={renderedColumnIndex}
-              table={table}
-            />
-          );
-        },
-      )}
+            return (
+              <MRT_TableFooterCell
+                footer={footer}
+                key={footer.id}
+                renderedColumnIndex={renderedColumnIndex}
+                table={table}
+              />
+            );
+          },
+        )}
       {virtualPaddingRight ? (
         <Box component="th" display="flex" w={virtualPaddingRight} />
       ) : null}

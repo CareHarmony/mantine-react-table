@@ -1,3 +1,6 @@
+'use no memo';
+/* eslint-disable react-hooks/rules-of-hooks -- useMRT_TableOptions fixes the virtualization flags at initialization, so the early return never changes the hook order */
+
 import { useCallback } from 'react';
 
 import { type Range, useVirtualizer } from '@tanstack/react-virtual';
@@ -11,6 +14,7 @@ import {
 } from '../types';
 import { parseFromValuesOrFunc } from '../utils/utils';
 import { extraIndexRangeExtractor } from '../utils/virtualization.utils';
+import { useMRT_VirtualizerScrollElement } from './useMRT_VirtualizerScrollElement';
 
 export const useMRT_RowVirtualizer = <
   TData extends MRT_RowData,
@@ -83,6 +87,11 @@ export const useMRT_RowVirtualizer = <
     ),
     ...rowVirtualizerProps,
   }) as unknown as MRT_RowVirtualizer<TScrollElement, TItemElement>;
+
+  useMRT_VirtualizerScrollElement(
+    rowVirtualizer,
+    () => scrollAreaViewportRef.current ?? tableContainerRef.current,
+  );
 
   rowVirtualizer.virtualRows = rowVirtualizer.getVirtualItems() as any;
 

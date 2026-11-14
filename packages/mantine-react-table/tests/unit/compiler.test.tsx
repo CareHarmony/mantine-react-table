@@ -17,7 +17,8 @@ const bodyRows = () =>
     .getAllByRole('row')
     .filter(
       (row) =>
-        row.closest('tbody') && !row.classList.contains('mantine-Table-tr-detail-panel'),
+        row.closest('tbody') &&
+        !row.classList.contains('mantine-Table-tr-detail-panel'),
     );
 
 const firstColumnText = (cellIndex = 0) =>

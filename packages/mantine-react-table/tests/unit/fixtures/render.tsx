@@ -7,5 +7,6 @@ import userEvent from '@testing-library/user-event';
 
 export const renderWithMantine = (ui: ReactElement) => ({
   user: userEvent.setup(),
-  ...render(<MantineProvider>{ui}</MantineProvider>),
+  //env="test" turns off Mantine transitions and portals timing, which jsdom cannot run
+  ...render(<MantineProvider env="test">{ui}</MantineProvider>),
 });

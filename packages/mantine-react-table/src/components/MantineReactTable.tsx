@@ -1,3 +1,5 @@
+'use no memo';
+
 import { useMantineReactTable } from '../hooks/useMantineReactTable';
 import {
   type MRT_RowData,
@@ -21,16 +23,16 @@ const isTableInstanceProp = <TData extends MRT_RowData>(
 ): props is TableInstanceProp<TData> =>
   (props as TableInstanceProp<TData>).table !== undefined;
 
+const MRT_TableFromOptions = <TData extends MRT_RowData>(
+  props: MRT_TableOptions<TData>,
+) => <MRT_TablePaper table={useMantineReactTable(props)} />;
+
+//two components keep the hook call unconditional (Rules of Hooks)
 export const MantineReactTable = <TData extends MRT_RowData>(
   props: Props<TData>,
-) => {
-  let table: MRT_TableInstance<TData>;
-
-  if (isTableInstanceProp(props)) {
-    table = props.table;
-  } else {
-    table = useMantineReactTable(props);
-  }
-
-  return <MRT_TablePaper table={table} />;
-};
+) =>
+  isTableInstanceProp(props) ? (
+    <MRT_TablePaper table={props.table} />
+  ) : (
+    <MRT_TableFromOptions {...(props as MRT_TableOptions<TData>)} />
+  );

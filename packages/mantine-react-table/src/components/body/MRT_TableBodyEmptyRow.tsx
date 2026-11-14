@@ -1,3 +1,5 @@
+'use no memo';
+
 import clsx from 'clsx';
 
 import classes from './MRT_TableBody.module.css';
@@ -6,12 +8,7 @@ import { useMemo } from 'react';
 
 import { createRow } from '@tanstack/react-table';
 
-import {
-  type TableProps,
-  TableTd,
-  type TableTrProps,
-  Text,
-} from '@mantine/core';
+import { type TableProps, type TableTrProps, Text } from '@mantine/core';
 
 import { MRT_TableBodyRow } from './MRT_TableBodyRow';
 
@@ -20,7 +17,6 @@ import {
   type MRT_RowData,
   type MRT_TableInstance,
 } from '../../types';
-import { MRT_ExpandButton } from '../buttons/MRT_ExpandButton';
 
 interface Props<TData extends MRT_RowData> extends TableTrProps {
   table: MRT_TableInstance<TData>;
@@ -34,12 +30,7 @@ export const MRT_TableBodyEmptyRow = <TData extends MRT_RowData>({
 }: Props<TData>) => {
   const {
     getState,
-    options: {
-      layoutMode,
-      localization,
-      renderDetailPanel,
-      renderEmptyRowsFallback,
-    },
+    options: { layoutMode, localization, renderEmptyRowsFallback },
     refs: { tablePaperRef },
   } = table;
   const { columnFilters, globalFilter } = getState();
@@ -73,17 +64,6 @@ export const MRT_TableBodyEmptyRow = <TData extends MRT_RowData>({
       tableProps={tableProps}
       {...emptyRowProps}
     >
-      {renderDetailPanel && (
-        <TableTd
-          className={clsx(
-            'mrt-table-body-cell',
-            layoutMode?.startsWith('grid') && classes['empty-row-td-grid'],
-          )}
-          colSpan={1}
-        >
-          <MRT_ExpandButton row={emptyRow} table={table} />
-        </TableTd>
-      )}
       <td
         className={clsx(
           'mrt-table-body-cell',

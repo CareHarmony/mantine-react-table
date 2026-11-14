@@ -1,3 +1,5 @@
+'use no memo';
+
 import clsx from 'clsx';
 
 import classes from './MRT_TableHead.module.css';

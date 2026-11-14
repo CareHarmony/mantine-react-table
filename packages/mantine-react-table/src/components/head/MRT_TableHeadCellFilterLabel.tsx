@@ -1,3 +1,5 @@
+'use no memo';
+
 import clsx from 'clsx';
 
 import classes from './MRT_TableHeadCellFilterLabel.module.css';
@@ -159,7 +161,9 @@ export const MRT_TableHeadCellFilterLabel = <TData extends MRT_RowData>({
           <Popover.Dropdown
             onClick={(event) => event.stopPropagation()}
             onKeyDown={(event) =>
-              event.key === 'Enter' && setPopoverOpened(false)
+              event.key === 'Enter' &&
+              !event.nativeEvent.isComposing &&
+              setPopoverOpened(false)
             }
             onMouseDown={(event) => event.stopPropagation()}
           >

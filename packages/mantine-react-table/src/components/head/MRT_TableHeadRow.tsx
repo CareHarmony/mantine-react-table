@@ -1,3 +1,5 @@
+'use no memo';
+
 import clsx from 'clsx';
 
 import classes from './MRT_TableHeadRow.module.css';
@@ -15,6 +17,7 @@ import {
   type MRT_VirtualItem,
 } from '../../types';
 import { parseFromValuesOrFunc } from '../../utils/utils';
+import { getVirtualGroupHeaders } from '../../utils/virtualization.utils';
 
 interface Props<TData extends MRT_RowData> extends TableTrProps {
   columnVirtualizer?: MRT_ColumnVirtualizer;
@@ -37,6 +40,12 @@ export const MRT_TableHeadRow = <TData extends MRT_RowData>({
   const { virtualColumns, virtualPaddingLeft, virtualPaddingRight } =
     columnVirtualizer ?? {};
 
+  const virtualGroupHeaders = getVirtualGroupHeaders({
+    headers: headerGroup.headers,
+    table,
+    virtualColumns,
+  });
+
   const tableRowProps = {
     ...parseFromValuesOrFunc(mantineTableHeadRowProps, {
       headerGroup,
@@ -58,26 +67,36 @@ export const MRT_TableHeadRow = <TData extends MRT_RowData>({
       {virtualPaddingLeft ? (
         <Box component="th" display="flex" w={virtualPaddingLeft} />
       ) : null}
-      {(virtualColumns ?? headerGroup.headers).map(
-        (headerOrVirtualHeader, renderedHeaderIndex) => {
-          let header = headerOrVirtualHeader as MRT_Header<TData>;
-          if (columnVirtualizer) {
-            renderedHeaderIndex = (headerOrVirtualHeader as MRT_VirtualItem)
-              .index;
-            header = headerGroup.headers[renderedHeaderIndex];
-          }
+      {virtualGroupHeaders?.map(({ header, index, style }) => (
+        <MRT_TableHeadCell
+          columnVirtualizer={columnVirtualizer}
+          header={header}
+          key={header.id}
+          renderedHeaderIndex={index}
+          style={style}
+          table={table}
+        />
+      )) ??
+        (virtualColumns ?? headerGroup.headers).map(
+          (headerOrVirtualHeader, renderedHeaderIndex) => {
+            let header = headerOrVirtualHeader as MRT_Header<TData>;
+            if (columnVirtualizer) {
+              renderedHeaderIndex = (headerOrVirtualHeader as MRT_VirtualItem)
+                .index;
+              header = headerGroup.headers[renderedHeaderIndex];
+            }
 
-          return (
-            <MRT_TableHeadCell
-              columnVirtualizer={columnVirtualizer}
-              header={header}
-              key={header.id}
-              renderedHeaderIndex={renderedHeaderIndex}
-              table={table}
-            />
-          );
-        },
-      )}
+            return (
+              <MRT_TableHeadCell
+                columnVirtualizer={columnVirtualizer}
+                header={header}
+                key={header.id}
+                renderedHeaderIndex={renderedHeaderIndex}
+                table={table}
+              />
+            );
+          },
+        )}
       {virtualPaddingRight ? (
         <Box component="th" display="flex" w={virtualPaddingRight} />
       ) : null}

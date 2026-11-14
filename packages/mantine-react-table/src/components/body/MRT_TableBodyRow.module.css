@@ -67,10 +67,15 @@
       }
 
       &[data-column-pinned='left'] {
-        left: calc(var(--mrt-table-cell-left, 0) * 1px);
+        /* logical offsets keep columns pinned to the same side of the row in rtl */
+        inset-inline-start: calc(var(--mrt-table-cell-left, 0) * 1px);
         &[data-last-left-pinned] {
           &::before {
-            box-shadow: -6px 0 6px -6px alpha(
+            --mrt-pinned-shadow-x: -6px;
+            @mixin rtl {
+              --mrt-pinned-shadow-x: 6px;
+            }
+            box-shadow: var(--mrt-pinned-shadow-x) 0 6px -6px alpha(
                 light-dark(
                   var(--mantine-color-gray-outline),
                   var(--mantine-color-dark-outline)
@@ -82,10 +87,14 @@
       }
 
       &[data-column-pinned='right'] {
-        right: calc(var(--mrt-table-cell-right, 0) * 1px);
+        inset-inline-end: calc(var(--mrt-table-cell-right, 0) * 1px);
         &[data-first-right-pinned] {
           &::before {
-            box-shadow: 6px 0 6px -6px alpha(
+            --mrt-pinned-shadow-x: 6px;
+            @mixin rtl {
+              --mrt-pinned-shadow-x: -6px;
+            }
+            box-shadow: var(--mrt-pinned-shadow-x) 0 6px -6px alpha(
                 light-dark(
                   var(--mantine-color-gray-outline),
                   var(--mantine-color-dark-outline)

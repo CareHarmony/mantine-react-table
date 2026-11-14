@@ -1,3 +1,5 @@
+'use no memo';
+
 import { useMemo, useRef, useState } from 'react';
 
 import { useReactTable } from '@tanstack/react-table';
@@ -231,7 +233,8 @@ export const useMRT_TableInstance = <TData extends MRT_RowData>(
             ).fill(null),
           ].map(() =>
             Object.assign(
-              {},
+              //`prepareColumns` skips a custom accessorFn for rows with this key
+              { [Symbol.for('mrt-skeleton-row')]: true },
               ...getAllLeafColumnDefs(statefulTableOptions.columns).map(
                 (col) => ({
                   [getColumnId(col)]: null,

@@ -1,3 +1,5 @@
+'use no memo';
+
 import { type FocusEvent, type KeyboardEvent, useState } from 'react';
 
 import {
@@ -100,7 +102,8 @@ export const MRT_EditCellTextInput = <TData extends MRT_RowData>({
 
   const handleEnterKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     textInputProps.onKeyDown?.(event);
-    if (event.key === 'Enter') {
+    //Enter also confirms an IME composition (Chinese, Japanese, Korean input)
+    if (event.key === 'Enter' && !event.nativeEvent.isComposing) {
       editInputRefs.current[cell.id]?.blur();
     }
   };

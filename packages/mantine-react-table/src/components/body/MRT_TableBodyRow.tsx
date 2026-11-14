@@ -1,3 +1,5 @@
+'use no memo';
+
 import clsx from 'clsx';
 
 import classes from './MRT_TableBodyRow.module.css';
@@ -84,6 +86,8 @@ export const MRT_TableBodyRow = <TData extends MRT_RowData>({
   const { virtualColumns, virtualPaddingLeft, virtualPaddingRight } =
     columnVirtualizer ?? {};
 
+  //the placeholder row for an empty table has no data to show in a detail panel
+  const isEmptyRow = row.id === 'mrt-row-empty';
   const isRowSelected = getIsRowSelected({ row, table });
   const isRowPinned = enableRowPinning && row.getIsPinned();
   const isRowStickyPinned =
@@ -243,7 +247,7 @@ export const MRT_TableBodyRow = <TData extends MRT_RowData>({
           <Box component="td" display="flex" w={virtualPaddingRight} />
         ) : null}
       </TableTr>
-      {renderDetailPanel && !row.getIsGrouped() && (
+      {renderDetailPanel && !row.getIsGrouped() && !isEmptyRow && (
         <MRT_TableDetailPanel
           parentRowRef={rowRef}
           renderedRowIndex={renderedRowIndex}
@@ -258,7 +262,12 @@ export const MRT_TableBodyRow = <TData extends MRT_RowData>({
   );
 };
 
+//`table` is a new reference whenever table state or options change, so a
+//memoized row still follows row selection, density, editing and so on
 export const Memo_MRT_TableBodyRow = memo(
   MRT_TableBodyRow,
-  (prev, next) => prev.row === next.row,
+  (prev, next) =>
+    prev.row === next.row &&
+    prev.table === next.table &&
+    prev.virtualRow?.start === next.virtualRow?.start,
 ) as typeof MRT_TableBodyRow;

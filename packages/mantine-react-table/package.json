@@ -37,8 +37,19 @@
         "default": "./dist/index.cjs"
       }
     },
+    "./locales/*": {
+      "import": {
+        "types": "./locales/*/index.esm.d.mts",
+        "default": "./locales/*/index.esm.mjs"
+      },
+      "require": {
+        "types": "./locales/*/index.d.cts",
+        "default": "./locales/*/index.cjs"
+      }
+    },
+    "./locales/*/index.cjs": "./locales/*/index.cjs",
+    "./locales/*/index.esm.mjs": "./locales/*/index.esm.mjs",
     "./package.json": "./package.json",
-    "./locales/*": "./locales/*",
     "./styles.css": "./styles.css"
   },
   "files": [
@@ -50,11 +61,11 @@
   "size-limit": [
     {
       "path": "dist/index.cjs",
-      "limit": "53 KB"
+      "limit": "58 KB"
     },
     {
       "path": "dist/index.esm.mjs",
-      "limit": "50 KB"
+      "limit": "55 KB"
     }
   ],
   "engines": {
@@ -62,28 +73,29 @@
   },
   "scripts": {
     "build": "pnpm lib:build",
-    "build-locales": "pnpm lib:build-locales",
     "build-lib": "pnpm lib:build-lib",
+    "build-locales": "pnpm lib:build-locales",
     "dev": "pnpm lib:dev",
     "lib:build": "pnpm build-lib && pnpm build-locales",
-    "lib:build-locales": "node build-locales.mjs",
     "lib:build-lib": "rm -rf dist && rollup -c rollup.config.mjs && size-limit",
+    "lib:build-locales": "node build-locales.mjs",
     "lib:dev": "rollup -c rollup.config.mjs --watch",
     "lint": "eslint .",
+    "prepublishOnly": "pnpm lint && pnpm typecheck && pnpm lib:build && pnpm test:all",
     "size": "size-limit",
     "storybook": "pnpm storybook:dev",
     "storybook:build": "storybook build",
     "storybook:dev": "storybook dev -p 6007",
     "storybook:serve": "serve storybook-static --listen 6008 --no-clipboard",
+    "test": "vitest run",
+    "test:all": "pnpm test && pnpm test:compiler && pnpm test:compiler:all && pnpm test:compiler:dist",
+    "test:compiler": "cross-env MRT_REACT_COMPILER=consumer vitest run",
+    "test:compiler:all": "cross-env MRT_REACT_COMPILER=all vitest run",
+    "test:compiler:dist": "cross-env MRT_REACT_COMPILER=all MRT_TEST_TARGET=dist vitest run",
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots",
-    "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "vitest run",
     "test:watch": "vitest",
-    "test:compiler": "cross-env MRT_REACT_COMPILER=consumer vitest run",
-    "test:compiler:dist": "cross-env MRT_REACT_COMPILER=all MRT_TEST_TARGET=dist vitest run",
-    "test:all": "pnpm test && pnpm test:compiler && pnpm test:compiler:dist",
-    "prepublishOnly": "pnpm lib:build && pnpm test:all"
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {
     "@babel/core": "^7.25.8",

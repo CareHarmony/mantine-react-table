@@ -30,8 +30,6 @@ const shouldCompile = (id: string) => {
 };
 
 export default defineConfig({
-  // One transform cache per mode. A shared cache serves uncompiled modules to the compiler runs.
-  cacheDir: `node_modules/.vite-mrt/${compilerMode}-${target}`,
   define: {
     __MRT_REACT_COMPILER__: JSON.stringify(compilerMode),
     __MRT_TEST_TARGET__: JSON.stringify(target),
@@ -52,6 +50,9 @@ export default defineConfig({
   test: {
     css: { modules: { classNameStrategy: 'non-scoped' } },
     environment: 'jsdom',
+    // The module cache is keyed by file, so it would serve modules transformed in
+    // one compiler mode to a run in another mode.
+    fsModuleCache: false,
     globals: true,
     include: ['tests/unit/**/*.test.{ts,tsx}'],
     restoreMocks: true,

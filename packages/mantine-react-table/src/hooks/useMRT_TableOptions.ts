@@ -1,6 +1,9 @@
+'use no memo';
+
 import { useMemo } from 'react';
 
 import {
+  type Column,
   getCoreRowModel,
   getExpandedRowModel,
   getFacetedMinMaxValues,
@@ -46,6 +49,37 @@ export const MRT_DefaultDisplayColumn = {
   enableResizing: false,
   enableSorting: false,
 } as const;
+
+const globalFilterValueCache = new WeakMap<object, Map<string, boolean>>();
+
+/**
+ * Finds the first row with a value in the column and checks that the value is
+ * a string or a number. The result is cached for each data array.
+ */
+const getColumnHasGlobalFilterValue = <TData extends MRT_RowData>(
+  data: TData[] | undefined,
+  column: Column<TData, unknown>,
+): boolean => {
+  if (!data?.length || !column.accessorFn) return false;
+  let cache = globalFilterValueCache.get(data);
+  if (!cache) {
+    cache = new Map();
+    globalFilterValueCache.set(data, cache);
+  }
+  let hasValue = cache.get(column.id);
+  if (hasValue === undefined) {
+    hasValue = false;
+    for (let index = 0; index < data.length; index++) {
+      const value = column.accessorFn(data[index], index);
+      if (value !== null && value !== undefined) {
+        hasValue = typeof value === 'string' || typeof value === 'number';
+        break;
+      }
+    }
+    cache.set(column.id, hasValue);
+  }
+  return hasValue;
+};
 
 export const useMRT_TableOptions: <TData extends MRT_RowData>(
   tableOptions: MRT_TableOptions<TData>,
@@ -219,6 +253,9 @@ export const useMRT_TableOptions: <TData extends MRT_RowData>(
     enableToolbarInternalActions,
     enableTopToolbar,
     filterFns,
+    //TanStack only checks the value in the first row, so a null there removes the column from the global filter
+    getColumnCanGlobalFilter: (column) =>
+      getColumnHasGlobalFilterValue(rest.data, column),
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel:
       enableExpanding || enableGrouping ? getExpandedRowModel() : undefined,

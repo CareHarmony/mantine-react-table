@@ -1,3 +1,5 @@
+'use no memo';
+
 import clsx from 'clsx';
 
 import classes from './MRT_TablePagination.module.css';
@@ -5,6 +7,7 @@ import classes from './MRT_TablePagination.module.css';
 import {
   ActionIcon,
   Box,
+  extractStyleProps,
   Group,
   Pagination,
   type PaginationProps,
@@ -76,13 +79,20 @@ export const MRT_TablePagination = <TData extends MRT_RowData>({
   const needsTopMargin =
     position === 'top' && enableToolbarInternalActions && !showGlobalFilter;
 
+  //the 'pages' mode passes these to the Mantine Pagination component instead
+  const isDefaultDisplayMode = paginationDisplayMode === 'default';
+  const { styleProps } = extractStyleProps(rest);
+
   return (
     <Box
+      {...(isDefaultDisplayMode ? styleProps : undefined)}
       className={clsx(
         'mrt-table-pagination',
         classes.root,
         needsTopMargin && classes['with-top-margin'],
+        isDefaultDisplayMode && rest.className,
       )}
+      style={isDefaultDisplayMode ? rest.style : undefined}
     >
       {paginationProps?.showRowsPerPage !== false && (
         <Group gap="xs">

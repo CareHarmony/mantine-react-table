@@ -1,3 +1,5 @@
+'use no memo';
+
 import { useEffect, useReducer, useRef } from 'react';
 
 import {

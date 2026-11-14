@@ -93,12 +93,20 @@ export type Xor<A, B> =
   | Prettify<{ [k in keyof A]?: never } & B>
   | Prettify<{ [k in keyof B]?: never } & A>;
 
+//object literals do not accept `data-*` keys unless the type declares them
+export type HTMLDataAttributes = { [key: `data-${string}`]: unknown };
+
 export type HTMLPropsRef<T extends HTMLElement> = {
   ref?: null | Ref<T>;
-} & Omit<
-  HTMLProps<T>,
-  'color' | 'data' | 'label' | 'ref' | 'size' | 'style' | 'type'
->;
+} & HTMLDataAttributes &
+  Omit<
+    HTMLProps<T>,
+    'color' | 'data' | 'label' | 'ref' | 'size' | 'style' | 'type'
+  >;
+
+//the HTML `title` attribute is a string, the Mantine Modal `title` is a ReactNode
+export type MRT_ModalProps = Omit<HTMLPropsRef<HTMLDivElement>, 'title'> &
+  Partial<ModalProps>;
 
 export type MantineShade = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
@@ -896,8 +904,8 @@ export type MRT_TableOptions<TData extends MRT_RowData> = {
     | ((props: {
         row: MRT_Row<TData>;
         table: MRT_TableInstance<TData>;
-      }) => HTMLPropsRef<HTMLDivElement> & Partial<ModalProps>)
-    | (HTMLPropsRef<HTMLDivElement> & Partial<ModalProps>);
+      }) => MRT_ModalProps)
+    | MRT_ModalProps;
   mantineDetailPanelProps?:
     | ((props: {
         row: MRT_Row<TData>;
@@ -908,8 +916,8 @@ export type MRT_TableOptions<TData extends MRT_RowData> = {
     | ((props: {
         row: MRT_Row<TData>;
         table: MRT_TableInstance<TData>;
-      }) => HTMLPropsRef<HTMLDivElement> & Partial<ModalProps>)
-    | (HTMLPropsRef<HTMLDivElement> & Partial<ModalProps>);
+      }) => MRT_ModalProps)
+    | MRT_ModalProps;
   mantineEditSelectProps?:
     | ((props: {
         cell: MRT_Cell<TData, MRT_CellValue>;

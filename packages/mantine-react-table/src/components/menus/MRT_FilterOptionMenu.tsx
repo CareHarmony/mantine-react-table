@@ -1,3 +1,5 @@
+'use no memo';
+
 import classes from './MRT_FilterOptionMenu.module.css';
 
 import { Fragment, useMemo } from 'react';
@@ -102,6 +104,7 @@ export const mrtFilterOptions = (
   },
 ];
 
+const defaultGlobalFilterModeOptions = ['fuzzy', 'contains', 'startsWith'];
 const rangeModes = ['between', 'betweenInclusive', 'inNumberRange'];
 const emptyModes = ['empty', 'notEmpty'];
 const arrModes = ['arrIncludesSome', 'arrIncludesAll', 'arrIncludes'];
@@ -151,11 +154,14 @@ export const MRT_FilterOptionMenu = <TData extends MRT_RowData>({
         columnDef
           ? allowedColumnFilterOptions === undefined ||
             allowedColumnFilterOptions?.includes(filterOption.option)
-          : (!globalFilterModeOptions ||
-              globalFilterModeOptions.includes(filterOption.option)) &&
-            ['contains', 'fuzzy', 'startsWith'].includes(filterOption.option),
+          : (
+              globalFilterModeOptions ?? defaultGlobalFilterModeOptions
+            ).includes(filterOption.option),
     );
-    if (filterOptions.length && filterOptions[filterOptions.length - 1].divider) {
+    if (
+      filterOptions.length &&
+      filterOptions[filterOptions.length - 1].divider
+    ) {
       filterOptions[filterOptions.length - 1].divider = false;
     }
     return filterOptions;
