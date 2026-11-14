@@ -17,7 +17,6 @@ import {
   type TextInputProps,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
-import { useDebouncedValue } from '@mantine/hooks';
 
 import { localizedFilterOption } from '../../fns/filterFns';
 import {
@@ -156,25 +155,26 @@ export const MRT_FilterTextInput = <TData extends MRT_RowData>({
         : ((column.getFilterValue() as string) ?? ''),
   );
 
-  const [debouncedFilterValue] = useDebouncedValue(
-    filterValue,
-    manualFiltering ? 400 : 200,
-  );
-
-  //send debounced filterValue to table instance
+  //send filterValue to the table instance once typing pauses. The timer restarts
+  //on every change, so text retyped right after a clear is sent again.
   useEffect(() => {
     if (!isMounted.current) return;
-    if (isRangeFilter) {
-      column.setFilterValue((old: [string, string]) => {
-        const newFilterValues = Array.isArray(old) ? old : ['', ''];
-        newFilterValues[rangeFilterIndex as number] =
-          debouncedFilterValue as string;
-        return newFilterValues;
-      });
-    } else {
-      column.setFilterValue(debouncedFilterValue ?? undefined);
-    }
-  }, [debouncedFilterValue]);
+    const timeout = setTimeout(
+      () => {
+        if (isRangeFilter) {
+          column.setFilterValue((old: [string, string]) => {
+            const newFilterValues = Array.isArray(old) ? old : ['', ''];
+            newFilterValues[rangeFilterIndex as number] = filterValue as string;
+            return newFilterValues;
+          });
+        } else {
+          column.setFilterValue(filterValue ?? undefined);
+        }
+      },
+      manualFiltering ? 400 : 200,
+    );
+    return () => clearTimeout(timeout);
+  }, [filterValue]);
 
   //receive table filter value and set it to local state
   useEffect(() => {
