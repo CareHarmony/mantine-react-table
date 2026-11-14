@@ -1,0 +1,76 @@
+{
+    "$schema": "./node_modules/syncpack/dist/schema.json",
+    "workspace": true,
+    "sortAz": [
+        "bin",
+        "contributors",
+        "scripts",
+        "dependencies",
+        "devDependencies",
+        "keywords",
+        "peerDependencies",
+        "resolutions"
+    ],
+    "sortFirst": [
+        "name",
+        "version",
+        "private",
+        "scripts",
+        "dependencies",
+        "devDependencies",
+        "peerDependencies",
+        "resolutions"
+    ],
+    "lintFormatting": true,
+    "lintSemverRanges": true,
+    "indent": "  ",
+    "versionGroups": [
+        {
+            "dependencies": [
+                "@types/**"
+            ],
+            "dependencyTypes": [
+                "!dev"
+            ],
+            "isBanned": true,
+            "label": "@types packages should only be under devDependencies"
+        },
+        {
+            "dependencies": [
+                "@mantine/**"
+            ],
+            "pinVersion": "9.0.0-alpha.3"
+        },
+        {
+            "dependencies": [
+                "react",
+                "react-dom"
+            ],
+            "pinVersion": "19.2.4"
+        },
+        {
+            "dependencies": [
+                "@types/react"
+            ],
+            "pinVersion": "19.2.14"
+        },
+        {
+            "dependencies": [
+                "@types/react-dom"
+            ],
+            "pinVersion": "19.2.3"
+        }
+    ],
+    "semverGroups": [
+        {
+            "label": "use exact version numbers for all dependencies",
+            "packages": [
+                "**"
+            ],
+            "dependencies": [
+                "**"
+            ],
+            "range": ""
+        }
+    ]
+}

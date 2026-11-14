@@ -16,7 +16,7 @@ import {
   type MRT_RowData,
   type MRT_TableInstance,
 } from '../../types';
-import { parseFromValuesOrFunc } from '../../utils/utils';
+import { assignRef, parseFromValuesOrFunc } from '../../utils/utils';
 
 interface PropsTextInput<TData extends MRT_RowData, TValue = MRT_CellValue>
   extends TextInputProps {
@@ -149,9 +149,7 @@ export const MRT_EditCellTextInput = <TData extends MRT_RowData>({
         ref={(node) => {
           if (node) {
             editInputRefs.current[cell.id] = node;
-            if (selectProps.ref) {
-              selectProps.ref.current = node;
-            }
+            assignRef(selectProps.ref, node);
           }
         }}
       />
@@ -180,9 +178,7 @@ export const MRT_EditCellTextInput = <TData extends MRT_RowData>({
         ref={(node) => {
           if (node) {
             editInputRefs.current[cell.id] = node;
-            if (selectProps.ref) {
-              selectProps.ref.current = node;
-            }
+            assignRef(selectProps.ref, node);
           }
         }}
       />
@@ -207,9 +203,7 @@ export const MRT_EditCellTextInput = <TData extends MRT_RowData>({
       ref={(node) => {
         if (node) {
           editInputRefs.current[cell.id] = node;
-          if (textInputProps.ref) {
-            textInputProps.ref.current = node;
-          }
+          assignRef(textInputProps.ref, node);
         }
       }}
     />

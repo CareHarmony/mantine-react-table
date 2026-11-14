@@ -12,7 +12,7 @@ import { MRT_ToolbarAlertBanner } from './MRT_ToolbarAlertBanner';
 import { MRT_ToolbarDropZone } from './MRT_ToolbarDropZone';
 
 import { type MRT_RowData, type MRT_TableInstance } from '../../types';
-import { parseFromValuesOrFunc } from '../../utils/utils';
+import { assignRef, parseFromValuesOrFunc } from '../../utils/utils';
 
 interface Props<TData extends MRT_RowData> extends BoxProps {
   table: MRT_TableInstance<TData>;
@@ -60,9 +60,7 @@ export const MRT_BottomToolbar = <TData extends MRT_RowData>({
       ref={(node: HTMLDivElement) => {
         if (node) {
           bottomToolbarRef.current = node;
-          if (toolbarProps?.ref) {
-            toolbarProps.ref.current = node;
-          }
+          assignRef(toolbarProps?.ref, node);
         }
       }}
     >

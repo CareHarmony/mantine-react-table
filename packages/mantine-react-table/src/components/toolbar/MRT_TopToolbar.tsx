@@ -13,7 +13,7 @@ import { MRT_ToolbarDropZone } from './MRT_ToolbarDropZone';
 import { MRT_ToolbarInternalButtons } from './MRT_ToolbarInternalButtons';
 
 import { type MRT_RowData, type MRT_TableInstance } from '../../types';
-import { parseFromValuesOrFunc } from '../../utils/utils';
+import { assignRef, parseFromValuesOrFunc } from '../../utils/utils';
 import { MRT_GlobalFilterTextInput } from '../inputs/MRT_GlobalFilterTextInput';
 
 interface Props<TData extends MRT_RowData> extends BoxProps {
@@ -76,9 +76,7 @@ export const MRT_TopToolbar = <TData extends MRT_RowData>({
       ref={(node: HTMLDivElement) => {
         if (node) {
           topToolbarRef.current = node;
-          if (toolbarProps?.ref) {
-            toolbarProps.ref.current = node;
-          }
+          assignRef(toolbarProps?.ref, node);
         }
       }}
     >

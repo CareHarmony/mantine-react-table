@@ -57,7 +57,7 @@ export const MRT_TableHeadCellFilterContainer = <TData extends MRT_RowData>({
       !!allowedColumnFilterOptions?.length);
 
   return (
-    <Collapse in={showColumnFilters || columnFilterDisplayMode === 'popover'}>
+    <Collapse expanded={showColumnFilters || columnFilterDisplayMode === 'popover'}>
       <Flex direction="column" {...rest}>
         <Flex align="flex-end">
           {columnDef.filterVariant === 'checkbox' ? (

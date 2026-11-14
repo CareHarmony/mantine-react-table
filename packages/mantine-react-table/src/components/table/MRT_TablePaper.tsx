@@ -7,7 +7,7 @@ import { Paper, type PaperProps } from '@mantine/core';
 import { MRT_TableContainer } from './MRT_TableContainer';
 
 import { type MRT_RowData, type MRT_TableInstance } from '../../types';
-import { parseFromValuesOrFunc } from '../../utils/utils';
+import { assignRef, parseFromValuesOrFunc } from '../../utils/utils';
 import { MRT_BottomToolbar } from '../toolbar/MRT_BottomToolbar';
 import { MRT_TopToolbar } from '../toolbar/MRT_TopToolbar';
 
@@ -50,9 +50,7 @@ export const MRT_TablePaper = <TData extends MRT_RowData>({
       )}
       ref={(ref: HTMLDivElement) => {
         tablePaperRef.current = ref;
-        if (tablePaperProps?.ref) {
-          tablePaperProps.ref.current = ref;
-        }
+        assignRef(tablePaperProps?.ref, ref);
       }}
       // rare case where we should use inline styles to guarantee highest specificity
       style={(theme) => ({
