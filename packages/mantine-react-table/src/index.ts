@@ -84,6 +84,7 @@ export * from './types';
 export * from './utils/column.utils';
 export * from './utils/displayColumn.utils';
 export * from './utils/row.utils';
+export * from './utils/snapshot.utils';
 export * from './utils/style.utils';
 //helpers
 export * from './utils/tanstack.helpers';

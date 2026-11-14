@@ -1,37 +1,61 @@
-# Mantine React Table
+# Mantine React Table NG
 
-View the [Docs Site](https://www.mantine-react-table.com/)
+`mantine-react-table-ng` is a maintained fork of [Mantine React Table](https://github.com/KevinVandy/mantine-react-table) for **React 19**, **Mantine 9** and the **React Compiler**.
 
-A fork of [Material React Table](https://www.material-react-table.com)
-
-V1 released July 18, 2023
-
-<a href="https://npmjs.com/package/mantine-react-table" target="_blank">
-  <img alt="" src="https://badgen.net/npm/v/mantine-react-table?color=blue" />
+<a href="https://npmjs.com/package/mantine-react-table-ng" target="_blank">
+  <img alt="" src="https://badgen.net/npm/v/mantine-react-table-ng?color=blue" />
 </a>
-<a href="https://npmtrends.com/mantine-react-table" target="_blank">
-  <img alt="" src="https://badgen.net/npm/dt/mantine-react-table?label=installs&icon=npm&color=blue" />
-</a>
-<a href="https://bundlephobia.com/result?p=mantine-react-table" target="_blank">
-  <img alt="" src="https://badgen.net/bundlephobia/minzip/mantine-react-table@latest?color=blue" />
-</a>
-<a href="https://star-history.com/#kevinvandy/mantine-react-table&Date" target="_blank">
-  <img alt="" src="https://badgen.net/github/stars/KevinVandy/mantine-react-table?color=blue" />
-</a>
-<a href="https://github.com/KevinVandy/mantine-react-table/blob/v2/LICENSE" target="_blank">
-  <img alt="" src="https://badgen.net/github/license/KevinVandy/mantine-react-table?color=blue" />
-</a>
-<a href="http://makeapullrequest.com" target="_blank">
-  <img alt="" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" />
+<a href="https://github.com/CareHarmony/mantine-react-table/blob/v4/LICENSE" target="_blank">
+  <img alt="" src="https://badgen.net/github/license/CareHarmony/mantine-react-table?color=blue" />
 </a>
 
 ## About
 
 ### _Quickly Create React Data Tables with Mantine_
 
-### __Built with [Mantine <sup>V7</sup>](https://mantine.dev/) and [TanStack Table <sup>V8</sup>](https://tanstack.com/table/v8)__
+### __Built with [Mantine <sup>V9</sup>](https://mantine.dev/) and [TanStack Table <sup>V8</sup>](https://tanstack.com/table/v8)__
 
-<img src="https://mantine-react-table.com/banner.png" alt="MRT" height="50"/>
+## Compatibility
+
+| Package | Supported versions |
+| --- | --- |
+| `react`, `react-dom` | `>=19.2.0` |
+| `@mantine/core`, `@mantine/dates`, `@mantine/hooks` | `>=9.0.0` |
+| `@tabler/icons-react` | `>=2.23.0` |
+| `dayjs` | `>=1.11` |
+| `clsx` | `>=2` |
+
+Use the original [`mantine-react-table`](https://npmjs.com/package/mantine-react-table) for Mantine 7 or React 18.
+
+## Migrating from `mantine-react-table` v2
+
+1. Replace the dependency: `npm uninstall mantine-react-table && npm install mantine-react-table-ng`.
+2. Replace the import specifier `mantine-react-table` with `mantine-react-table-ng`, including `/styles.css` and `/locales/*`.
+3. Remove every `'use no memo'` directive that was added only for Mantine React Table.
+
+Behavior changes from `2.0.0-beta.9`:
+
+- `useMantineReactTable` returns a new `table` reference whenever table state or table options change. Every reference reads the same live table, so an old reference is never stale. An effect that lists `table` as a dependency now runs on those changes.
+- `memoMode: 'rows'` re-renders rows when table state changes. The old comparator ignored row selection.
+- The empty-table placeholder row no longer renders an expand button or a detail panel. Use `renderEmptyRowsFallback` for empty-state content.
+- `globalFilterModeOptions` replaces the default global filter mode list.
+- A column takes part in the global filter when any row has a string or number value. TanStack Table only checked the first row.
+- Pinned columns use logical CSS offsets, so pinning follows `dir="rtl"`.
+
+## React Compiler
+
+Application code that uses this package can be compiled by the [React Compiler](https://react.dev/learn/react-compiler) without `'use no memo'`.
+
+- The `table` reference changes when table state or options change, so compiled components and memoized JSX see the update.
+- Read table data through the table: `table.getState()`, `table.getSelectedRowModel()`, `table.getRowModel()`.
+- The package opts its own source and bundles out of the compiler with `'use no memo'`, because TanStack Table v8 rows, cells and columns are mutable instances.
+- A compiled component that receives only a `row`, `cell` or `column` and stores a method result in `useMemo` keyed on that object can hold a stale value. Pass `table` to that component and include it in the dependency list.
+
+The test suite runs in four modes: no compiler, compiler on consumer code, compiler on library source, and compiler on the built bundle.
+
+```bash
+pnpm test:all
+```
 
 ## Learn More
 
@@ -100,18 +124,18 @@ _**Fully Fleshed out [Docs](https://www.mantine-react-table.com/docs/guides#guid
 
 View the full [Installation Docs](https://www.mantine-react-table.com/docs/getting-started/install)
 
-1. Ensure that you have React 17 or later installed
+1. Ensure that you have React 19.2 or later installed
 
-2. Install Peer Dependencies (Mantine V6 and Tabler Icons)
+2. Install Peer Dependencies (Mantine V9 and Tabler Icons)
 
 ```bash
-npm install @mantine/core @mantine/hooks @mantine/dates @emotion/react @tabler/icons-react dayjs
+npm install @mantine/core @mantine/hooks @mantine/dates @tabler/icons-react dayjs clsx
 ```
 
-3. Install mantine-react-table
+3. Install mantine-react-table-ng
 
 ```bash
-npm install mantine-react-table
+npm install mantine-react-table-ng
 ```
 
 > _`@tanstack/react-table`, `@tanstack/react-virtual`, `@tanstack/match-sorter-utils`,_ are internal dependencies, so you do NOT need to install them yourself.
@@ -122,7 +146,10 @@ npm install mantine-react-table
 
 ```jsx
 import { useMemo, useState, useEffect } from 'react';
-import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
+import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
+import 'mantine-react-table-ng/styles.css';
+import { MantineReactTable, useMantineReactTable } from 'mantine-react-table-ng';
 
 const data = [
   {

@@ -27,6 +27,7 @@ import {
   type MRT_VirtualItem,
 } from '../../types';
 import { getIsRowSelected } from '../../utils/row.utils';
+import { getMRT_RowView } from '../../utils/snapshot.utils';
 import { parseFromValuesOrFunc } from '../../utils/utils';
 
 interface Props<TData extends MRT_RowData> extends TableTrProps {
@@ -47,13 +48,15 @@ export const MRT_TableBodyRow = <TData extends MRT_RowData>({
   numRows,
   pinnedRowIds,
   renderedRowIndex = 0,
-  row,
+  row: rowProp,
   rowVirtualizer,
   table,
   tableProps,
   virtualRow,
   ...rest
 }: Props<TData>) => {
+  //a view has a new identity per table reference, which compiled render callbacks need
+  const row = getMRT_RowView(table, rowProp);
   const {
     getState,
     options: {

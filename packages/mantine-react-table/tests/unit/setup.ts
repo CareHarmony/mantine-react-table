@@ -33,9 +33,9 @@ class IntersectionObserverStub {
   }
   unobserve() {}
 }
-// @ts-expect-error jsdom has no IntersectionObserver
 window.IntersectionObserver =
-  window.IntersectionObserver ?? IntersectionObserverStub;
+  window.IntersectionObserver ??
+  (IntersectionObserverStub as unknown as typeof IntersectionObserver);
 
 window.HTMLElement.prototype.scrollIntoView = vi.fn();
 window.scrollTo = vi.fn() as unknown as typeof window.scrollTo;

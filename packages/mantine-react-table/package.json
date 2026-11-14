@@ -95,7 +95,7 @@
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc -p tsconfig.test.json"
   },
   "devDependencies": {
     "@babel/core": "^7.25.8",

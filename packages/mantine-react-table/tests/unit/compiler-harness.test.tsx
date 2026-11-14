@@ -1,5 +1,6 @@
 import * as appPatterns from './fixtures/AppPatterns';
 import * as consumerTables from './fixtures/ConsumerTables';
+import * as rowObjects from './fixtures/RowObjects';
 
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -17,7 +18,11 @@ const memoCacheCall = /const \$ = \(0,\s*__vite_ssr_import_\d+__\.c\)\(\d+\)/;
 const isCompiled = (component: unknown) =>
   memoCacheCall.test(String(component));
 
-const fixtures = Object.entries({ ...appPatterns, ...consumerTables }).filter(
+const fixtures = Object.entries({
+  ...appPatterns,
+  ...consumerTables,
+  ...rowObjects,
+}).filter(
   ([name, value]) => typeof value === 'function' && /^[A-Z]/.test(name),
 );
 

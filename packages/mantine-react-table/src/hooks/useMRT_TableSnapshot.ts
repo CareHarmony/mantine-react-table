@@ -7,6 +7,7 @@ import {
   type MRT_TableInstance,
   type MRT_TableOptions,
 } from '../types';
+import { createMRT_View } from '../utils/snapshot.utils';
 
 type Snapshot<TData extends MRT_RowData> = {
   options: Record<string, unknown>;
@@ -42,7 +43,7 @@ const shallowEqual = (
  *
  * This hook returns a new reference whenever table state, table options or the
  * internal render version change, and the same reference otherwise. Each
- * reference delegates to the one underlying instance through its prototype,
+ * reference is a view (see `snapshot.utils.ts`) of the one underlying instance,
  * so every reference reads current data and an old reference is never stale.
  */
 export const useMRT_TableSnapshot = <TData extends MRT_RowData>(
@@ -62,9 +63,10 @@ export const useMRT_TableSnapshot = <TData extends MRT_RowData>(
     !shallowEqual(previous.state, state) ||
     !shallowEqual(previous.options, options, ignoredOptionKeys)
   ) {
-    const snapshot = Object.create(table) as MRT_TableInstance<TData>;
-    //a new function identity keeps `const { getState } = table` reactive too
-    snapshot.getState = () => table.getState();
+    const snapshot = createMRT_View(table, {
+      //a new function identity keeps `const { getState } = table` reactive too
+      getState: () => table.getState(),
+    } as Partial<MRT_TableInstance<TData>>);
     snapshotRef.current = { options, state, table: snapshot, version };
   }
 

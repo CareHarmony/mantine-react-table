@@ -61,5 +61,5 @@
     },
   ],
   "root": true,
-  "ignorePatterns": ["dist/", "locales/", "node_modules/"],
+  "ignorePatterns": ["dist/", "locales/", "node_modules/", "storybook-static/", "tests/test-results/", "playwright-report/"],
 }

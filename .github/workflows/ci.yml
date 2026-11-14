@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'v4'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+        working-directory: packages/mantine-react-table
+
+      - name: Typecheck
+        run: pnpm typecheck
+        working-directory: packages/mantine-react-table
+
+      - name: Build library
+        run: pnpm lib:build
+        working-directory: packages/mantine-react-table
+
+      # Runs the unit tests four times: no React Compiler, compiler on consumer
+      # code, compiler on library source, and compiler on the built bundle.
+      - name: Unit tests in all React Compiler modes
+        run: pnpm test:all
+        working-directory: packages/mantine-react-table
