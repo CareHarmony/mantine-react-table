@@ -1,4 +1,4 @@
-import { MantineReactTable, MRT_TableOptions } from '../../src';
+import { MantineReactTable } from '../../src';
 
 import { type Meta } from '@storybook/react';
 

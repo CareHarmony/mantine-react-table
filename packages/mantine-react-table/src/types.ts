@@ -64,6 +64,7 @@ import {
   type SkeletonProps,
   type SwitchProps,
   type TableProps,
+  type TableScrollContainerProps,
   type TableTbodyProps,
   type TableTdProps,
   type TableTfootProps,
@@ -73,7 +74,6 @@ import {
   type TextInputProps,
   type UnstyledButtonProps,
 } from '@mantine/core';
-import { type TableScrollContainerProps } from '@mantine/core/lib/components/Table/TableScrollContainer';
 import { type DateInputProps } from '@mantine/dates';
 
 import { type MRT_AggregationFns } from './fns/aggregationFns';
@@ -94,7 +94,7 @@ export type Xor<A, B> =
   | Prettify<{ [k in keyof B]?: never } & A>;
 
 export type HTMLPropsRef<T extends HTMLElement> = {
-  ref?: Ref<T> | null;
+  ref?: null | Ref<T>;
 } & Omit<
   HTMLProps<T>,
   'color' | 'data' | 'label' | 'ref' | 'size' | 'style' | 'type'
@@ -602,11 +602,6 @@ export type MRT_ColumnDef<TData extends MRT_RowData, TValue = unknown> = {
         table: MRT_TableInstance<TData>;
       }) => HTMLPropsRef<HTMLInputElement> & Partial<TextInputProps>)
     | (HTMLPropsRef<HTMLInputElement> & Partial<TextInputProps>);
-  mantineScrollAreaProps?:
-    | ((props: {
-        table: MRT_TableInstance<TData>;
-      }) => HTMLPropsRef<HTMLDivElement> & ScrollAreaProps)
-    | (HTMLPropsRef<HTMLDivElement> & ScrollAreaProps);
   mantineTableBodyCellProps?:
     | ((props: {
         cell: MRT_Cell<TData, TValue>;
@@ -767,6 +762,14 @@ export type MRT_CreateTableFeature<
  * See the full props list on the official docs site:
  * @link https://www.mantine-react-table.com/docs/api/table-options
  */
+/**
+ * Props for the optional `Table.ScrollContainer` wrapper (`withScrollArea`).
+ * Extra `ScrollArea` props pass through to the underlying Mantine `ScrollArea`.
+ */
+export type MRT_ScrollAreaProps = HTMLPropsRef<HTMLDivElement> &
+  Partial<Omit<ScrollAreaProps, 'type'>> &
+  Partial<TableScrollContainerProps>;
+
 export type MRT_TableOptions<TData extends MRT_RowData> = {
   columnFilterDisplayMode?: 'custom' | 'popover' | 'subheader';
   columnFilterModeOptions?: Array<
@@ -1010,8 +1013,8 @@ export type MRT_TableOptions<TData extends MRT_RowData> = {
     | ((props: {
         isTopToolbar: boolean;
         table: MRT_TableInstance<TData>;
-      }) => HTMLPropsRef<HTMLDivElement> & ProgressProps)
-    | (HTMLPropsRef<HTMLDivElement> & ProgressProps);
+      }) => HTMLPropsRef<HTMLDivElement> & Partial<ProgressProps>)
+    | (HTMLPropsRef<HTMLDivElement> & Partial<ProgressProps>);
   mantineRowDragHandleProps?:
     | ((props: {
         row: MRT_Row<TData>;
@@ -1019,10 +1022,8 @@ export type MRT_TableOptions<TData extends MRT_RowData> = {
       }) => HTMLPropsRef<HTMLButtonElement> & Partial<ActionIconProps>)
     | (HTMLPropsRef<HTMLButtonElement> & Partial<ActionIconProps>);
   mantineScrollAreaProps?:
-    | ((props: {
-        table: MRT_TableInstance<TData>;
-      }) => HTMLPropsRef<HTMLDivElement> & Partial<TableScrollContainerProps>)
-    | HTMLPropsRef<HTMLDivElement> & Partial<TableScrollContainerProps>;
+    | ((props: { table: MRT_TableInstance<TData> }) => MRT_ScrollAreaProps)
+    | MRT_ScrollAreaProps;
   mantineSearchTextInputProps?:
     | ((props: {
         table: MRT_TableInstance<TData>;

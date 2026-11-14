@@ -2,25 +2,25 @@ import clsx from 'clsx';
 
 import classes from './MRT_Table.module.css';
 
-import { Fragment, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import {
   darken,
   lighten,
   Table,
   type TableProps,
+  type TableScrollContainerProps,
   useMantineColorScheme,
 } from '@mantine/core';
-import { type TableScrollContainerProps } from '@mantine/core/lib/components/Table/TableScrollContainer';
 
 import { useMRT_ColumnVirtualizer } from '../../hooks/useMRT_ColumnVirtualizer';
 import {
-  type HTMLPropsRef,
   type MRT_RowData,
+  type MRT_ScrollAreaProps,
   type MRT_TableInstance,
 } from '../../types';
 import { parseCSSVarId } from '../../utils/style.utils';
-import { parseFromValuesOrFunc } from '../../utils/utils';
+import { assignRef, parseFromValuesOrFunc } from '../../utils/utils';
 import { Memo_MRT_TableBody, MRT_TableBody } from '../body/MRT_TableBody';
 import { MRT_TableFooter } from '../footer/MRT_TableFooter';
 import { MRT_TableHead } from '../head/MRT_TableHead';
@@ -81,69 +81,64 @@ export const MRT_Table = <TData extends MRT_RowData>({
 
   const { stripedColor } = tableProps;
 
-  const scrollContainerProps = (
-    withScrollArea
-      ? {
-          h: '100%',
-          minWidth: '100%',
-          offsetScrollbars: 'present',
-          w: '100%',
-          ...mantineScrollAreaProps,
-        }
-      : {}
-  ) as HTMLPropsRef<HTMLDivElement> & TableScrollContainerProps;
-  const ScrollWrapper = withScrollArea ? Table.ScrollContainer : Fragment;
+  const tableNode = (
+    <Table
+      className={clsx(
+        'mrt-table',
+        classes.root,
+        layoutMode?.startsWith('grid') && classes['root-grid'],
+        tableProps.className,
+      )}
+      {...tableProps}
+      __vars={{
+        ...columnSizeVars,
+        '--mrt-striped-row-background-color': stripedColor,
+        '--mrt-striped-row-hover-background-color': stripedColor
+          ? colorScheme === 'dark'
+            ? lighten(stripedColor, 0.08)
+            : darken(stripedColor, 0.12)
+          : undefined,
+        ...tableProps.__vars,
+      }}
+    >
+      {enableTableHead && <MRT_TableHead {...commonTableGroupProps} />}
+      {memoMode === 'table-body' || columnSizingInfo.isResizingColumn ? (
+        <Memo_MRT_TableBody
+          {...commonTableGroupProps}
+          tableProps={tableProps}
+        />
+      ) : (
+        <MRT_TableBody {...commonTableGroupProps} tableProps={tableProps} />
+      )}
+      {enableTableFooter && <MRT_TableFooter {...commonTableGroupProps} />}
+    </Table>
+  );
+
+  if (!withScrollArea) return tableNode;
+
+  const { ref: scrollAreaRef, ...scrollContainerProps } = {
+    h: '100%',
+    minWidth: '100%',
+    offsetScrollbars: 'present',
+    w: '100%',
+    ...parseFromValuesOrFunc(mantineScrollAreaProps, { table }),
+  } as MRT_ScrollAreaProps & TableScrollContainerProps;
 
   return (
-    <ScrollWrapper
+    <Table.ScrollContainer
       {...scrollContainerProps}
-      className={clsx(
-        withScrollArea && classes.scrollContainer,
-        scrollContainerProps?.className,
-      )}
-      ref={(node: HTMLDivElement) => {
+      ref={(node: HTMLDivElement | null) => {
         if (node && !table.refs.scrollAreaViewportRef.current) {
           const viewPort = node.querySelector(
             '.mantine-ScrollArea-viewport',
           ) as HTMLDivElement;
 
           table.refs.scrollAreaViewportRef.current = viewPort;
-          if (scrollContainerProps.ref) {
-            scrollContainerProps.ref.current = viewPort;
-          }
+          assignRef(scrollAreaRef, viewPort);
         }
       }}
     >
-      <Table
-        className={clsx(
-          'mrt-table',
-          classes.root,
-          layoutMode?.startsWith('grid') && classes['root-grid'],
-          tableProps.className,
-        )}
-        {...tableProps}
-        __vars={{
-          ...columnSizeVars,
-          '--mrt-striped-row-background-color': stripedColor,
-          '--mrt-striped-row-hover-background-color': stripedColor
-            ? colorScheme === 'dark'
-              ? lighten(stripedColor, 0.08)
-              : darken(stripedColor, 0.12)
-            : undefined,
-          ...tableProps.__vars,
-        }}
-      >
-        {enableTableHead && <MRT_TableHead {...commonTableGroupProps} />}
-        {memoMode === 'table-body' || columnSizingInfo.isResizingColumn ? (
-          <Memo_MRT_TableBody
-            {...commonTableGroupProps}
-            tableProps={tableProps}
-          />
-        ) : (
-          <MRT_TableBody {...commonTableGroupProps} tableProps={tableProps} />
-        )}
-        {enableTableFooter && <MRT_TableFooter {...commonTableGroupProps} />}
-      </Table>
-    </ScrollWrapper>
+      {tableNode}
+    </Table.ScrollContainer>
   );
 };

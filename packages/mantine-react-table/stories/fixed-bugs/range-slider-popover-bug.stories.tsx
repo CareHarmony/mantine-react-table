@@ -1,10 +1,12 @@
 import { useMemo } from 'react';
-import { type Meta } from '@storybook/react';
+
 import {
   MantineReactTable,
-  useMantineReactTable,
   type MRT_ColumnDef,
+  useMantineReactTable,
 } from '../../src';
+
+import { type Meta } from '@storybook/react';
 
 const meta: Meta = {
   title: 'Fixed Bugs/Range Slider Popover Bug',
@@ -13,35 +15,35 @@ const meta: Meta = {
 export default meta;
 
 type Person = {
+  city: string;
   name: string;
   salary: number;
-  city: string;
   state: string;
 };
 
 const data: Person[] = [
   {
+    city: 'New York',
     name: 'John Doe',
     salary: 100000,
-    city: 'New York',
     state: 'New York',
   },
   {
+    city: 'Los Angeles',
     name: 'Jane Smith',
     salary: 80000,
-    city: 'Los Angeles',
     state: 'California',
   },
   {
+    city: 'Chicago',
     name: 'Bob Johnson',
     salary: 120000,
-    city: 'Chicago',
     state: 'Illinois',
   },
   {
+    city: 'Houston',
     name: 'Alice Brown',
     salary: 95000,
-    city: 'Houston',
     state: 'Texas',
   },
 ];
@@ -64,52 +66,52 @@ export const RangeSliderPopoverBugFixed = () => {
     () => [
       {
         accessorKey: 'name',
-        header: 'Name',
         filterVariant: 'text', // This works fine
+        header: 'Name',
       },
       {
         accessorKey: 'salary',
-        header: 'Salary (Click filter icon to test)',
-        filterVariant: 'range-slider', // This caused the bug
         Cell: ({ cell }) =>
           cell.getValue<number>().toLocaleString('en-US', {
-            style: 'currency',
             currency: 'USD',
+            style: 'currency',
           }),
+        filterVariant: 'range-slider', // This caused the bug
+        header: 'Salary (Click filter icon to test)',
         mantineFilterRangeSliderProps: {
           color: 'blue',
-          step: 10000,
           label: (value) =>
             value.toLocaleString('en-US', {
-              style: 'currency',
               currency: 'USD',
+              style: 'currency',
             }),
+          step: 10000,
         },
       },
       {
         accessorKey: 'city',
-        header: 'City',
         filterVariant: 'select', // This works fine
+        header: 'City',
       },
       {
         accessorKey: 'state',
-        header: 'State',
         filterVariant: 'multi-select', // This works fine
+        header: 'State',
       },
     ],
     [],
   );
 
   const table = useMantineReactTable({
+    columnFilterDisplayMode: 'popover', // Required to trigger the bug
     columns,
     data,
-    columnFilterDisplayMode: 'popover', // Required to trigger the bug
     initialState: { showColumnFilters: true },
   });
 
   return (
     <div>
-      <div style={{ marginBottom: '16px', padding: '12px', backgroundColor: '#f0f8ff', border: '1px solid #0066cc', borderRadius: '4px' }}>
+      <div style={{ backgroundColor: '#f0f8ff', border: '1px solid #0066cc', borderRadius: '4px', marginBottom: '16px', padding: '12px' }}>
         <strong>Bug Test:</strong> Click the filter icon in the "Salary" column header. 
         <br />
         <strong>Before fix:</strong> Would throw "TypeError: input.select is not a function"

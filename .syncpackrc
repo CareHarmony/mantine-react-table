@@ -39,26 +39,26 @@
             "dependencies": [
                 "@mantine/**"
             ],
-            "pinVersion": "9.0.0-alpha.3"
+            "pinVersion": "9.8.0"
         },
         {
             "dependencies": [
                 "react",
                 "react-dom"
             ],
-            "pinVersion": "19.2.4"
+            "pinVersion": "19.3.1"
         },
         {
             "dependencies": [
                 "@types/react"
             ],
-            "pinVersion": "19.2.14"
+            "pinVersion": "19.3.0"
         },
         {
             "dependencies": [
                 "@types/react-dom"
             ],
-            "pinVersion": "19.2.3"
+            "pinVersion": "19.3.0"
         }
     ],
     "semverGroups": [
