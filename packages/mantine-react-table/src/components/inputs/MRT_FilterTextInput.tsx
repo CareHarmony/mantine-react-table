@@ -155,6 +155,10 @@ export const MRT_FilterTextInput = <TData extends MRT_RowData>({
         : ((column.getFilterValue() as string) ?? ''),
   );
 
+  //the range value of this input that the table last held. The other range input
+  //changes the same filter array, and that must not reset text typed here.
+  const tableRangeValue = useRef<unknown>(isRangeFilter ? filterValue : '');
+
   //send filterValue to the table instance once typing pauses. The timer restarts
   //on every change, so text retyped right after a clear is sent again.
   useEffect(() => {
@@ -184,11 +188,17 @@ export const MRT_FilterTextInput = <TData extends MRT_RowData>({
     }
     const tableFilterValue = column.getFilterValue();
     if (tableFilterValue === undefined) {
+      tableRangeValue.current = '';
       handleClear();
     } else if (isRangeFilter && rangeFilterIndex !== undefined) {
-      setFilterValue(
-        ((tableFilterValue ?? ['', '']) as [string, string])[rangeFilterIndex],
-      );
+      const next =
+        ((tableFilterValue ?? ['', '']) as [string, string])[
+          rangeFilterIndex
+        ] ?? '';
+      if (next !== tableRangeValue.current) {
+        tableRangeValue.current = next;
+        setFilterValue(next);
+      }
     } else {
       setFilterValue(tableFilterValue ?? '');
     }
