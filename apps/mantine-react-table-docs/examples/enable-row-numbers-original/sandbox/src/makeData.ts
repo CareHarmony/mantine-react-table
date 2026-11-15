@@ -1,4 +1,4 @@
-import { type MRT_ColumnDef } from 'mantine-react-table-ng';
+import { type MRT_ColumnDef } from '@careharmony/mantine-react-table-ng';
 
 export type Person = {
   firstName: string;

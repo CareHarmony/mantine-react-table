@@ -9,7 +9,7 @@
     "moduleResolution": "bundler",
     "noEmit": true,
     "paths": {
-      "mantine-react-table-ng": ["./src/index.ts"]
+      "@careharmony/mantine-react-table-ng": ["./src/index.ts"]
     },
     "plugins": [{ "name": "typescript-plugin-css-modules" }],
     "skipLibCheck": true,

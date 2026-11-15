@@ -2,12 +2,12 @@ import { columns, people, type Person } from '../fixtures/data';
 import { renderWithMantine } from '../fixtures/render';
 import { mockElementSizes } from './virtualization';
 
-import { screen, waitFor } from '@testing-library/react';
 import {
   MantineReactTable,
   type MRT_ColumnDef,
   useMantineReactTable,
-} from 'mantine-react-table-ng';
+} from '@careharmony/mantine-react-table-ng';
+import { screen, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 const headerText = () =>

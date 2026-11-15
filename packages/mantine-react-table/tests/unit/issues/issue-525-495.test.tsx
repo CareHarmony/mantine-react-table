@@ -1,8 +1,8 @@
 import { columns, type Person } from '../fixtures/data';
 import { renderWithMantine } from '../fixtures/render';
 
+import { MantineReactTable } from '@careharmony/mantine-react-table-ng';
 import { screen } from '@testing-library/react';
-import { MantineReactTable } from 'mantine-react-table-ng';
 import { describe, expect, it, vi } from 'vitest';
 
 const noPeople: Person[] = [];

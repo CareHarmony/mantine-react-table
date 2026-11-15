@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { MantineReactTable, useMantineReactTable } from 'mantine-react-table-ng';
+import { MantineReactTable, useMantineReactTable } from '@careharmony/mantine-react-table-ng';
 import { data } from './makeData';
 
 const Example = () => {

@@ -21,7 +21,7 @@ import {
   MRT_TablePagination,
   MRT_ToolbarInternalButtons,
   useMantineReactTable,
-} from 'mantine-react-table-ng';
+} from '@careharmony/mantine-react-table-ng';
 
 /** Reads table state next to the hook, outside of any MRT component. */
 export const HookTable = () => {

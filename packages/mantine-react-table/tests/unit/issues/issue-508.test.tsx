@@ -5,7 +5,7 @@ import {
   MantineReactTable,
   MRT_TablePagination,
   useMantineReactTable,
-} from 'mantine-react-table-ng';
+} from '@careharmony/mantine-react-table-ng';
 import { describe, expect, it } from 'vitest';
 
 const CustomToolbarTable = () => {

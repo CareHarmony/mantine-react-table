@@ -1,4 +1,4 @@
-import { type MRT_Column } from 'mantine-react-table-ng';
+import { type MRT_Column } from '@careharmony/mantine-react-table-ng';
 
 export interface ColumnInstanceAPI {
   columnInstanceAPI: keyof MRT_Column<ColumnInstanceAPI>;

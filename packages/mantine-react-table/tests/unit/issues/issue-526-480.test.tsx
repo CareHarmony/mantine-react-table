@@ -7,8 +7,8 @@ import { DirectionProvider, MantineProvider } from '@mantine/core';
 
 import { columns, people } from '../fixtures/data';
 
+import { MantineReactTable } from '@careharmony/mantine-react-table-ng';
 import { render, screen } from '@testing-library/react';
-import { MantineReactTable } from 'mantine-react-table-ng';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';

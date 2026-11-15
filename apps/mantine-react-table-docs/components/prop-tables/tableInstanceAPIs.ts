@@ -1,4 +1,4 @@
-import { type MRT_TableInstance } from 'mantine-react-table-ng';
+import { type MRT_TableInstance } from '@careharmony/mantine-react-table-ng';
 
 export interface TableInstanceAPI {
   tableInstanceAPI: keyof MRT_TableInstance<TableInstanceAPI>;

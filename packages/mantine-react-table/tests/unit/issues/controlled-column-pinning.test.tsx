@@ -2,12 +2,12 @@ import { useState } from 'react';
 
 import { renderWithMantine } from '../fixtures/render';
 
-import { waitFor } from '@testing-library/react';
 import {
   MantineReactTable,
   type MRT_ColumnDef,
   type MRT_ColumnPinningState,
-} from 'mantine-react-table-ng';
+} from '@careharmony/mantine-react-table-ng';
+import { waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 type Person = { firstName: string; lastName: string };

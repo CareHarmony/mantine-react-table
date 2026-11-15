@@ -1,5 +1,5 @@
 /**
- * `mantine-react-table-ng/locales/fr` failed to resolve because the export
+ * `@careharmony/mantine-react-table-ng/locales/fr` failed to resolve because the export
  * target was the directory `./locales/*`. Node and Vite do not look for an
  * index file or a nested package.json behind an `exports` target.
  */

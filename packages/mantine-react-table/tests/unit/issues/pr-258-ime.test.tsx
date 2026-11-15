@@ -1,8 +1,8 @@
 import { columns, people } from '../fixtures/data';
 import { renderWithMantine } from '../fixtures/render';
 
+import { MantineReactTable } from '@careharmony/mantine-react-table-ng';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { MantineReactTable } from 'mantine-react-table-ng';
 import { describe, expect, it } from 'vitest';
 
 describe('PR 258: Enter key during IME composition', () => {

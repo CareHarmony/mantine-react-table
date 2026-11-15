@@ -3,7 +3,7 @@ import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css'; //if using mantine date picker features
 import '@mantine/code-highlight/styles.css';
 import '../styles/highlight.css';
-import 'mantine-react-table-ng/styles.css';
+import '@careharmony/mantine-react-table-ng/styles.css';
 import { useState } from 'react';
 import { type AppProps } from 'next/app';
 import Head from 'next/head';

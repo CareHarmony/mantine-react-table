@@ -20,7 +20,7 @@ import {
   type MRT_TableInstance,
   type MRT_VisibilityState,
   useMantineReactTable,
-} from 'mantine-react-table-ng';
+} from '@careharmony/mantine-react-table-ng';
 
 /**
  * Server-side table: sorting, filters and pagination are consumer state, the

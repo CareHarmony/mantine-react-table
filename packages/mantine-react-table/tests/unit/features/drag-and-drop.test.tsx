@@ -3,13 +3,13 @@ import { useState } from 'react';
 import { columns, people, type Person } from '../fixtures/data';
 import { renderWithMantine } from '../fixtures/render';
 
-import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import {
   MantineReactTable,
   type MRT_ColumnDef,
   type MRT_TableOptions,
   type MRT_TableState,
-} from 'mantine-react-table-ng';
+} from '@careharmony/mantine-react-table-ng';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 type Options = Partial<MRT_TableOptions<Person>>;

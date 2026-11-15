@@ -1,5 +1,5 @@
-import { MantineReactTable, type MRT_ColumnDef } from 'mantine-react-table-ng';
-import { getPrimaryColor } from 'mantine-react-table-ng';
+import { MantineReactTable, type MRT_ColumnDef } from '@careharmony/mantine-react-table-ng';
+import { getPrimaryColor } from '@careharmony/mantine-react-table-ng';
 import classes from './FeatureTable.module.css';
 
 const columns: MRT_ColumnDef<(typeof data)[0]>[] = [

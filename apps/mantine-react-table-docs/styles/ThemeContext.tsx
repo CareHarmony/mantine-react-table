@@ -15,7 +15,7 @@ import bash from 'highlight.js/lib/languages/bash';
 import css from 'highlight.js/lib/languages/css';
 import javascript from 'highlight.js/lib/languages/javascript';
 import typescript from 'highlight.js/lib/languages/typescript';
-import { type MantineShade } from 'mantine-react-table-ng';
+import { type MantineShade } from '@careharmony/mantine-react-table-ng';
 import { useContext } from 'react';
 
 // highlight.js has no JSX grammar. Its JavaScript and TypeScript grammars parse JSX.

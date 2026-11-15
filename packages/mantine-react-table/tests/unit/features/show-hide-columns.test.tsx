@@ -1,14 +1,14 @@
 import { columns, people, type Person } from '../fixtures/data';
 import { renderWithMantine } from '../fixtures/render';
 
-import { fireEvent, screen, waitFor, within } from '@testing-library/react';
-import { type UserEvent } from '@testing-library/user-event';
 import {
   MantineReactTable,
   type MRT_ColumnDef,
   type MRT_TableOptions,
   useMantineReactTable,
-} from 'mantine-react-table-ng';
+} from '@careharmony/mantine-react-table-ng';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import { type UserEvent } from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
 const getRowId = (row: Person) => row.id;

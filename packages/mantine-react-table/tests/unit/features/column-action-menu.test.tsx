@@ -4,6 +4,12 @@ import { columns, people, type Person } from '../fixtures/data';
 import { renderWithMantine } from '../fixtures/render';
 
 import {
+  MantineReactTable,
+  type MRT_ColumnDef,
+  type MRT_TableOptions,
+  useMantineReactTable,
+} from '@careharmony/mantine-react-table-ng';
+import {
   act,
   fireEvent,
   screen,
@@ -11,12 +17,6 @@ import {
   within,
 } from '@testing-library/react';
 import { type UserEvent } from '@testing-library/user-event';
-import {
-  MantineReactTable,
-  type MRT_ColumnDef,
-  type MRT_TableOptions,
-  useMantineReactTable,
-} from 'mantine-react-table-ng';
 import { describe, expect, it, vi } from 'vitest';
 
 const getRowId = (row: Person) => row.id;

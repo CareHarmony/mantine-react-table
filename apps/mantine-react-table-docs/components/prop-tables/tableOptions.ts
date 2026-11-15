@@ -1,4 +1,4 @@
-import { type MRT_TableOptions } from 'mantine-react-table-ng';
+import { type MRT_TableOptions } from '@careharmony/mantine-react-table-ng';
 
 export type TableOption = {
   defaultValue?: string;

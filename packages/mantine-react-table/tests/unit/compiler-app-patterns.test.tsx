@@ -12,8 +12,8 @@ import {
 import { type Person } from './fixtures/data';
 import { renderWithMantine } from './fixtures/render';
 
+import { type MRT_TableInstance } from '@careharmony/mantine-react-table-ng';
 import { screen, waitFor, within } from '@testing-library/react';
-import { type MRT_TableInstance } from 'mantine-react-table-ng';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const bodyRows = () =>

@@ -9,13 +9,13 @@
     "start": "vite"
   },
   "dependencies": {
+    "@careharmony/mantine-react-table-ng": "^4.0.0-beta.0",
     "@mantine/core": "^9.8.0",
     "@mantine/dates": "^9.8.0",
     "@mantine/hooks": "^9.8.0",
     "@tabler/icons-react": "^3.52.0",
     "@tanstack/react-query": "^5.77.2",
     "dayjs": "^1.11.13",
-    "mantine-react-table-ng": "^4.0.0-beta.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },

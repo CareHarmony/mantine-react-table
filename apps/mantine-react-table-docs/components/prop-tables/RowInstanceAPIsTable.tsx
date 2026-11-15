@@ -5,7 +5,7 @@ import {
   type MRT_ColumnDef,
   type MRT_Row,
   type MRT_ColumnPinningState,
-} from 'mantine-react-table-ng';
+} from '@careharmony/mantine-react-table-ng';
 import { Anchor, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { type RowInstanceAPI, rowInstanceAPIs } from './rowInstanceAPIs';

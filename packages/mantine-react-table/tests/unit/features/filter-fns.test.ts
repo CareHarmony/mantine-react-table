@@ -1,4 +1,4 @@
-import { MRT_FilterFns } from 'mantine-react-table-ng';
+import { MRT_FilterFns } from '@careharmony/mantine-react-table-ng';
 import { describe, expect, it, vi } from 'vitest';
 
 type FilterRow = Parameters<typeof MRT_FilterFns.contains>[0];

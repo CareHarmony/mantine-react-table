@@ -9,7 +9,7 @@ import { join } from 'node:path';
  * Guards the test harness itself. A compiler run that silently executes
  * uncompiled fixtures would pass every behavior test and prove nothing.
  */
-import * as library from 'mantine-react-table-ng';
+import * as library from '@careharmony/mantine-react-table-ng';
 import { describe, expect, it } from 'vitest';
 
 //the compiled output reads its memo cache through `c(n)` from react/compiler-runtime

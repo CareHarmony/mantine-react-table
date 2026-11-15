@@ -17,6 +17,9 @@ importers:
 
   apps/mantine-react-table-docs:
     dependencies:
+      '@careharmony/mantine-react-table-ng':
+        specifier: workspace:*
+        version: link:../../packages/mantine-react-table
       '@docsearch/js':
         specifier: 3.9.0
         version: 3.9.0(@algolia/client-search@5.64.0)(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(search-insights@2.17.3)
@@ -83,9 +86,6 @@ importers:
       jspdf-autotable:
         specifier: ^3.8.3
         version: 3.8.3(jspdf@2.5.2)
-      mantine-react-table-ng:
-        specifier: workspace:*
-        version: link:../../packages/mantine-react-table
       next:
         specifier: 16.4.6
         version: 16.4.6(@playwright/test@1.58.2)(@types/node@22.7.5)(babel-plugin-react-compiler@1.0.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(sass@1.89.0)

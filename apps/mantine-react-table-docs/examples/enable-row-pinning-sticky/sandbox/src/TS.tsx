@@ -3,7 +3,7 @@ import {
   MantineReactTable,
   type MRT_ColumnDef,
   useMantineReactTable,
-} from 'mantine-react-table-ng';
+} from '@careharmony/mantine-react-table-ng';
 import { data, type Person } from './makeData';
 
 const Example = () => {

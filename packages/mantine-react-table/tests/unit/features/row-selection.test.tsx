@@ -3,14 +3,14 @@ import { useState } from 'react';
 import { columns, manyPeople, people, type Person } from '../fixtures/data';
 import { renderWithMantine } from '../fixtures/render';
 
-import { screen, within } from '@testing-library/react';
 import {
   MantineReactTable,
   type MRT_ColumnDef,
   type MRT_RowSelectionState,
   type MRT_TableOptions,
   type MRT_TableState,
-} from 'mantine-react-table-ng';
+} from '@careharmony/mantine-react-table-ng';
+import { screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 type User = ReturnType<typeof renderWithMantine>['user'];

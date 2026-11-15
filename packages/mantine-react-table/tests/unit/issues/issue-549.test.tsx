@@ -2,8 +2,8 @@ import { columns, manyPeople } from '../fixtures/data';
 import { renderWithMantine } from '../fixtures/render';
 import { mockElementSizes } from './virtualization';
 
+import { MantineReactTable } from '@careharmony/mantine-react-table-ng';
 import { screen, waitFor } from '@testing-library/react';
-import { MantineReactTable } from 'mantine-react-table-ng';
 import { describe, expect, it } from 'vitest';
 
 const data = manyPeople(40);

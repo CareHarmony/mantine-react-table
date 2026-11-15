@@ -1,7 +1,10 @@
 import { MantineProvider } from '@mantine/core';
 
+import {
+  MantineReactTable,
+  type MRT_ColumnDef,
+} from '@careharmony/mantine-react-table-ng';
 import { render, screen } from '@testing-library/react';
-import { MantineReactTable, type MRT_ColumnDef } from 'mantine-react-table-ng';
 import { describe, expect, it } from 'vitest';
 
 type Customer = {

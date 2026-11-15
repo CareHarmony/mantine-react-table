@@ -1,9 +1,9 @@
 # Mantine React Table NG
 
-`mantine-react-table-ng` is a maintained fork of [Mantine React Table](https://github.com/KevinVandy/mantine-react-table) for **React 19**, **Mantine 9** and the **React Compiler**.
+`@careharmony/mantine-react-table-ng` is a maintained fork of [Mantine React Table](https://github.com/KevinVandy/mantine-react-table) for **React 19**, **Mantine 9** and the **React Compiler**.
 
-<a href="https://npmjs.com/package/mantine-react-table-ng" target="_blank">
-  <img alt="" src="https://badgen.net/npm/v/mantine-react-table-ng?color=blue" />
+<a href="https://npmjs.com/package/@careharmony/mantine-react-table-ng" target="_blank">
+  <img alt="" src="https://badgen.net/npm/v/@careharmony/mantine-react-table-ng?color=blue" />
 </a>
 <a href="https://github.com/CareHarmony/mantine-react-table/blob/v4/LICENSE" target="_blank">
   <img alt="" src="https://badgen.net/github/license/CareHarmony/mantine-react-table?color=blue" />
@@ -29,8 +29,8 @@ Use the original [`mantine-react-table`](https://npmjs.com/package/mantine-react
 
 ## Migrating from `mantine-react-table` v2
 
-1. Replace the dependency: `npm uninstall mantine-react-table && npm install mantine-react-table-ng`.
-2. Replace the import specifier `mantine-react-table` with `mantine-react-table-ng`, including `/styles.css` and `/locales/*`.
+1. Replace the dependency: `npm uninstall mantine-react-table && npm install @careharmony/mantine-react-table-ng`.
+2. Replace the import specifier `mantine-react-table` with `@careharmony/mantine-react-table-ng`, including `/styles.css` and `/locales/*`.
 3. Remove every `'use no memo'` directive that was added only for Mantine React Table.
 
 Behavior changes from `2.0.0-beta.9`:
@@ -132,10 +132,10 @@ View the full [Installation Docs](https://www.mantine-react-table.com/docs/getti
 npm install @mantine/core @mantine/hooks @mantine/dates @tabler/icons-react dayjs clsx
 ```
 
-3. Install mantine-react-table-ng
+3. Install @careharmony/mantine-react-table-ng
 
 ```bash
-npm install mantine-react-table-ng
+npm install @careharmony/mantine-react-table-ng
 ```
 
 > _`@tanstack/react-table`, `@tanstack/react-virtual`, `@tanstack/match-sorter-utils`,_ are internal dependencies, so you do NOT need to install them yourself.
@@ -148,8 +148,8 @@ npm install mantine-react-table-ng
 import { useMemo, useState, useEffect } from 'react';
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
-import 'mantine-react-table-ng/styles.css';
-import { MantineReactTable, useMantineReactTable } from 'mantine-react-table-ng';
+import '@careharmony/mantine-react-table-ng/styles.css';
+import { MantineReactTable, useMantineReactTable } from '@careharmony/mantine-react-table-ng';
 
 const data = [
   {

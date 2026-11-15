@@ -4,11 +4,11 @@ import {
   MantineReactTable,
   type MRT_ColumnDef,
   type MRT_ColumnPinningState,
-} from 'mantine-react-table-ng';
+} from '@careharmony/mantine-react-table-ng';
 import { Anchor, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { type ColumnOption, columnOptions } from './columnOptions';
-import { getPrimaryColor } from 'mantine-react-table-ng';
+import { getPrimaryColor } from '@careharmony/mantine-react-table-ng';
 import { InlineCodeHighlight } from '@mantine/code-highlight';
 
 interface Props {

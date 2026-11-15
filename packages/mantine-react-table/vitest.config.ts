@@ -60,12 +60,15 @@ export default defineConfig({
   ],
   resolve: {
     alias: [
-      { find: /^mantine-react-table-ng$/, replacement: entry },
+      { find: /^@careharmony\/mantine-react-table-ng$/, replacement: entry },
       {
-        find: /^mantine-react-table-ng\/locales\/([^/]+)$/,
+        find: /^@careharmony\/mantine-react-table-ng\/locales\/([^/]+)$/,
         replacement: locale,
       },
-      { find: /^mantine-react-table-ng\/styles\.css$/, replacement: styles },
+      {
+        find: /^@careharmony\/mantine-react-table-ng\/styles\.css$/,
+        replacement: styles,
+      },
     ],
     //the docs examples resolve packages from the docs app's node_modules
     dedupe: [

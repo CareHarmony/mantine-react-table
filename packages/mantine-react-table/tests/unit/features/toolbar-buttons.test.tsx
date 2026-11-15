@@ -3,13 +3,13 @@ import { useState } from 'react';
 import { columns, people, type Person } from '../fixtures/data';
 import { renderWithMantine } from '../fixtures/render';
 
-import { screen, waitFor, within } from '@testing-library/react';
 import {
   createMRTColumnHelper,
   MantineReactTable,
   type MRT_TableOptions,
   useMantineReactTable,
-} from 'mantine-react-table-ng';
+} from '@careharmony/mantine-react-table-ng';
+import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 const getRowId = (row: Person) => row.id;

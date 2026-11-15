@@ -1,4 +1,4 @@
-import { type MRT_Cell } from 'mantine-react-table-ng';
+import { type MRT_Cell } from '@careharmony/mantine-react-table-ng';
 
 export interface CellInstanceAPI {
   cellInstanceAPI: keyof MRT_Cell<CellInstanceAPI>;

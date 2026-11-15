@@ -22,7 +22,7 @@ import {
 import { LinkHeading } from './LinkHeading';
 import { usePlausible } from 'next-plausible';
 import { useThemeContext } from '../../styles/ThemeContext';
-import { type MantineShade } from 'mantine-react-table-ng';
+import { type MantineShade } from '@careharmony/mantine-react-table-ng';
 import classes from './SourceCodeSnippet.module.css';
 import { useRouter } from 'next/router';
 

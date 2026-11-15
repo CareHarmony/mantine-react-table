@@ -1,7 +1,10 @@
 import { renderWithMantine } from '../fixtures/render';
 
+import {
+  MantineReactTable,
+  type MRT_ColumnDef,
+} from '@careharmony/mantine-react-table-ng';
 import { screen, waitFor } from '@testing-library/react';
-import { MantineReactTable, type MRT_ColumnDef } from 'mantine-react-table-ng';
 import { describe, expect, it } from 'vitest';
 
 type Place = { city: null | string; name: string; zip: null | number };
