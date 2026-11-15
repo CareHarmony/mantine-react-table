@@ -31,6 +31,7 @@ export const MRT_TableContainer = <TData extends MRT_RowData>({
       enableStickyHeader,
       mantineLoadingOverlayProps,
       mantineTableContainerProps,
+      withScrollArea,
     },
     refs: { bottomToolbarRef, tableContainerRef, tableHeadRef, topToolbarRef },
   } = table;
@@ -67,10 +68,7 @@ export const MRT_TableContainer = <TData extends MRT_RowData>({
         : 0;
 
     setTotalToolbarHeight(topToolbarHeight + bottomToolbarHeight);
-  }, [
-    topToolbarRef.current?.offsetHeight,
-    bottomToolbarRef.current?.offsetHeight,
-  ]);
+  }); //no dependency list: the bottom toolbar ref attaches after this effect first runs
 
   useIsomorphicLayoutEffect(() => {
     const setOffset = () => {
@@ -102,6 +100,7 @@ export const MRT_TableContainer = <TData extends MRT_RowData>({
         classes.root,
         enableStickyHeader && classes['root-sticky'],
         isFullScreen && classes['root-fullscreen'],
+        withScrollArea && classes['root-scroll-area'],
         tableContainerProps?.className,
       )}
       ref={(node: HTMLDivElement) => {

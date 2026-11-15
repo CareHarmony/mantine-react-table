@@ -163,7 +163,7 @@ export const MRT_FilterTextInput = <TData extends MRT_RowData>({
       () => {
         if (isRangeFilter) {
           column.setFilterValue((old: [string, string]) => {
-            const newFilterValues = Array.isArray(old) ? old : ['', ''];
+            const newFilterValues = Array.isArray(old) ? [...old] : ['', '']; //a copy: the previous filter value is table state
             newFilterValues[rangeFilterIndex as number] = filterValue as string;
             return newFilterValues;
           });
@@ -201,7 +201,7 @@ export const MRT_FilterTextInput = <TData extends MRT_RowData>({
     } else if (isRangeFilter) {
       setFilterValue('');
       column.setFilterValue((old: [string | undefined, string | undefined]) => {
-        const newFilterValues = Array.isArray(old) ? old : ['', ''];
+        const newFilterValues = Array.isArray(old) ? [...old] : ['', '']; //a copy: the previous filter value is table state
         newFilterValues[rangeFilterIndex as number] = undefined;
         return newFilterValues;
       });

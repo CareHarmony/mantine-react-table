@@ -6,11 +6,12 @@
   max-width: 100%;
   position: relative;
   overflow: auto;
+}
 
-  &:has(:global(.mantine-ScrollArea-root)) {
-    overflow: unset;
-    height: var(--max-height-calc);
-  }
+/* set by the `withScrollArea` option, so a ScrollArea in a cell or detail panel does not match */
+.root-scroll-area {
+  overflow: unset;
+  height: var(--max-height-calc);
 }
 
 .root-sticky {
@@ -22,10 +23,10 @@
   --max-height: var(--max-height-calc) !important;
 }
 
-.root :global(.mantine-ScrollArea-root) {
+.root > :global(.mrt-table-scroll-area) {
   max-height: var(--max-height);
 
-  [data-orientation='vertical'] {
+  > [data-orientation='vertical'] {
     top: var(--mrt-scroll-offset);
   }
 }

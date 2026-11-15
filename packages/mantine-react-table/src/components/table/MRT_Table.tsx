@@ -118,7 +118,11 @@ export const MRT_Table = <TData extends MRT_RowData>({
 
   if (!withScrollArea) return tableNode;
 
-  const { ref: scrollAreaRef, ...scrollContainerProps } = {
+  const {
+    ref: scrollAreaRef,
+    viewportRef,
+    ...scrollContainerProps
+  } = {
     h: '100%',
     minWidth: '100%',
     offsetScrollbars: 'present',
@@ -129,15 +133,20 @@ export const MRT_Table = <TData extends MRT_RowData>({
   return (
     <Table.ScrollContainer
       {...scrollContainerProps}
-      ref={(node: HTMLDivElement | null) => {
-        if (node && !table.refs.scrollAreaViewportRef.current) {
-          const viewPort = node.querySelector(
-            '.mantine-ScrollArea-viewport',
-          ) as HTMLDivElement;
-
-          table.refs.scrollAreaViewportRef.current = viewPort;
-          assignRef(scrollAreaRef, viewPort);
-        }
+      className={clsx(
+        'mrt-table-scroll-area',
+        scrollContainerProps.className,
+      )}
+      //Mantine hands over the viewport itself, and null when it unmounts, so
+      //the ref does not depend on a class name and never keeps a removed node
+      scrollAreaProps={{
+        ...scrollContainerProps.scrollAreaProps,
+        viewportRef: (node: HTMLDivElement | null) => {
+          table.refs.scrollAreaViewportRef.current = node;
+          assignRef(scrollAreaRef, node);
+          assignRef(viewportRef, node);
+          assignRef(scrollContainerProps.scrollAreaProps?.viewportRef, node);
+        },
       }}
     >
       {tableNode}

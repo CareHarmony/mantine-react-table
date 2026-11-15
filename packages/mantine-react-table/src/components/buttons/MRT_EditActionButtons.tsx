@@ -69,6 +69,9 @@ export const MRT_EditActionButtons = <TData extends MRT_RowData>({
         if (
           isTextInput &&
           Object.hasOwn(valuesCache, columnId) &&
+          //a number or other parsed value is the consumer's, and its text form can differ
+          (typeof valuesCache[columnId] === 'string' ||
+            valuesCache[columnId] == null) &&
           input.value !== String(valuesCache[columnId] ?? '')
         ) {
           valuesCache[columnId] = input.value;

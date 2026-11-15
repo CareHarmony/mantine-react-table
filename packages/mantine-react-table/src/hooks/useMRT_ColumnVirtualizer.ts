@@ -99,10 +99,7 @@ export const useMRT_ColumnVirtualizer = <
     ...columnVirtualizerProps,
   }) as unknown as MRT_ColumnVirtualizer<TScrollElement, TItemElement>;
 
-  useMRT_VirtualizerScrollElement(
-    columnVirtualizer,
-    () => scrollAreaViewportRef.current ?? tableContainerRef.current,
-  );
+  useMRT_VirtualizerScrollElement(columnVirtualizer);
 
   const virtualColumns = columnVirtualizer.getVirtualItems();
   columnVirtualizer.virtualColumns = virtualColumns as any;

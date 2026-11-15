@@ -13,14 +13,17 @@ import { useEffect, useReducer } from 'react';
  * longer depends on an unrelated parent re-render, which compiled consumer
  * code does not produce.
  */
-export const useMRT_VirtualizerScrollElement = (
-  virtualizer: { scrollElement: unknown },
-  getScrollElement: () => Element | null,
-) => {
+export const useMRT_VirtualizerScrollElement = (virtualizer: {
+  options: { enabled?: boolean; getScrollElement: () => unknown };
+  scrollElement: unknown;
+}) => {
   const rerender = useReducer((version: number) => version + 1, 0)[1];
 
   useEffect(() => {
-    const scrollElement = getScrollElement();
+    //the virtualizer's own options decide the element, so a consumer's
+    //`getScrollElement` or `enabled: false` never leaves a permanent mismatch
+    const { enabled, getScrollElement } = virtualizer.options;
+    const scrollElement = enabled === false ? null : getScrollElement();
     if (scrollElement && virtualizer.scrollElement !== scrollElement) {
       rerender();
     }

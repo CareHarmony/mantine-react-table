@@ -88,10 +88,7 @@ export const useMRT_RowVirtualizer = <
     ...rowVirtualizerProps,
   }) as unknown as MRT_RowVirtualizer<TScrollElement, TItemElement>;
 
-  useMRT_VirtualizerScrollElement(
-    rowVirtualizer,
-    () => scrollAreaViewportRef.current ?? tableContainerRef.current,
-  );
+  useMRT_VirtualizerScrollElement(rowVirtualizer);
 
   rowVirtualizer.virtualRows = rowVirtualizer.getVirtualItems() as any;
 

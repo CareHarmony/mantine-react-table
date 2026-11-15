@@ -30,6 +30,9 @@ const getDateFilterValue = (cellValue: unknown, filterValue: unknown) => {
   return isNaN(+date) ? undefined : date;
 };
 
+//a date filter picks a day, so dates compare by their local day and not by time
+const getDay = (date: Date) => new Date(date).setHours(0, 0, 0, 0);
+
 const fuzzy = <TData extends MRT_RowData>(
   row: Row<TData>,
   columnId: string,
@@ -94,10 +97,7 @@ const equals = <TData extends MRT_RowData>(
 ) => {
   const dateFilterValue = getDateFilterValue(row.getValue(id), filterValue);
   if (dateFilterValue) {
-    //a date filter picks a day, so every time on that day matches
-    return (
-      row.getValue<Date>(id).toDateString() === dateFilterValue.toDateString()
-    );
+    return getDay(row.getValue<Date>(id)) === getDay(dateFilterValue);
   }
   return (
     row.getValue<number | string>(id)?.toString().toLowerCase().trim() ===
@@ -120,8 +120,11 @@ const greaterThan = <TData extends MRT_RowData>(
   id: string,
   rawFilterValue: number | string,
 ) => {
-  const filterValue =
-    getDateFilterValue(row.getValue(id), rawFilterValue) ?? rawFilterValue;
+  const dateFilterValue = getDateFilterValue(row.getValue(id), rawFilterValue);
+  if (dateFilterValue) {
+    return getDay(row.getValue<Date>(id)) > getDay(dateFilterValue);
+  }
+  const filterValue = rawFilterValue;
   return !isNaN(+filterValue) && !isNaN(+row.getValue<number | string>(id))
     ? +row.getValue<number | string>(id) > +filterValue
     : row.getValue<number | string>(id)?.toString().toLowerCase().trim() >
@@ -143,8 +146,11 @@ const lessThan = <TData extends MRT_RowData>(
   id: string,
   rawFilterValue: number | string,
 ) => {
-  const filterValue =
-    getDateFilterValue(row.getValue(id), rawFilterValue) ?? rawFilterValue;
+  const dateFilterValue = getDateFilterValue(row.getValue(id), rawFilterValue);
+  if (dateFilterValue) {
+    return getDay(row.getValue<Date>(id)) < getDay(dateFilterValue);
+  }
+  const filterValue = rawFilterValue;
   return !isNaN(+filterValue) && !isNaN(+row.getValue<number | string>(id))
     ? +row.getValue<number | string>(id) < +filterValue
     : row.getValue<number | string>(id)?.toString().toLowerCase().trim() <

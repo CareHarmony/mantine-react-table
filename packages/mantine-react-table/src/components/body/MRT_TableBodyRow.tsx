@@ -16,6 +16,7 @@ import {
 import { Memo_MRT_TableBodyCell, MRT_TableBodyCell } from './MRT_TableBodyCell';
 import { MRT_TableDetailPanel } from './MRT_TableDetailPanel';
 
+import { getMRT_TableStateVersion } from '../../hooks/useMRT_TableSnapshot';
 import {
   type MRT_Cell,
   type MRT_ColumnVirtualizer,
@@ -176,9 +177,8 @@ export const MRT_TableBodyRow = <TData extends MRT_RowData>({
         ref={(node: HTMLTableRowElement) => {
           if (node) {
             rowRef.current = node;
-            if (virtualRow?.size !== node.getBoundingClientRect().height) {
-              rowVirtualizer?.measureElement(node);
-            }
+            //also registers the row with the virtualizer's ResizeObserver
+            rowVirtualizer?.measureElement(node);
           }
         }}
         {...tableRowProps}
@@ -265,12 +265,14 @@ export const MRT_TableBodyRow = <TData extends MRT_RowData>({
   );
 };
 
-//`table` is a new reference whenever table state or options change, so a
-//memoized row still follows row selection, density, editing and so on
+//the state version changes whenever table state changes, so a memoized row
+//still follows row selection, density, editing and so on. The `table`
+//reference is not compared: an inline option gives a new one on every render.
 export const Memo_MRT_TableBodyRow = memo(
   MRT_TableBodyRow,
   (prev, next) =>
     prev.row === next.row &&
-    prev.table === next.table &&
+    getMRT_TableStateVersion(prev.table) ===
+      getMRT_TableStateVersion(next.table) &&
     prev.virtualRow?.start === next.virtualRow?.start,
 ) as typeof MRT_TableBodyRow;
