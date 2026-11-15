@@ -1,5 +1,5 @@
 {
-  "version": "4.0.0-beta.0",
+  "version": "4.0.0-beta.1",
   "license": "MIT",
   "name": "@careharmony/mantine-react-table-ng",
   "description": "A fully featured Mantine 9 and React 19 implementation of TanStack React Table V8. Maintained fork of mantine-react-table.",
