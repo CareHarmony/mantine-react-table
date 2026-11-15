@@ -85,6 +85,8 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text-summary', 'html', 'json-summary'],
       reportsDirectory: './coverage',
+      //measured 97% lines, 91% branches, 95% functions when these were set
+      thresholds: { branches: 85, functions: 90, lines: 93, statements: 93 },
     },
     css: { modules: { classNameStrategy: 'non-scoped' } },
     environment: 'jsdom',

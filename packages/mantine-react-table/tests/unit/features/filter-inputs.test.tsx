@@ -404,7 +404,7 @@ describe(`column filter inputs [compiler=${__MRT_REACT_COMPILER__}, target=${__M
         'January 15, 2024',
       );
       await waitFor(() => expect(columnFilters()).toHaveLength(1));
-      expect(names()).toEqual(['Ada', 'Dee']);
+      await waitFor(() => expect(names()).toEqual(['Ada', 'Dee']));
     });
 
     it("'date-range' keeps the rows between the picked days", async () => {
@@ -418,7 +418,8 @@ describe(`column filter inputs [compiler=${__MRT_REACT_COMPILER__}, target=${__M
           (columnFilters()[0]?.value as undefined | unknown[])?.every(Boolean),
         ).toBe(true),
       );
-      expect(names()).toEqual(['Ada', 'Ben', 'Cy', 'Dee']);
+      //the input emits every parsable partial date while typing, so wait for the final rows
+      await waitFor(() => expect(names()).toEqual(['Ada', 'Ben', 'Cy', 'Dee']));
     });
   });
 
