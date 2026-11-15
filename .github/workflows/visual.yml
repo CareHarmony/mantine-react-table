@@ -1,0 +1,72 @@
+name: Visual regression
+
+# Compares all Storybook stories with the screenshots in
+# packages/mantine-react-table/tests/snapshots.
+#
+# Runs on demand only. The baselines were captured on Windows
+# (file names end in -chromium-win32.png), so the job uses a Windows runner.
+# Font rendering can still differ from the machine that made the baselines.
+# If it does, run with "update" checked, download the snapshots artifact and
+# commit it as the new baselines.
+on:
+  workflow_dispatch:
+    inputs:
+      update:
+        description: Write new baseline screenshots instead of comparing
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  visual:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: packages/mantine-react-table
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Chromium
+        run: pnpm exec playwright install chromium
+
+      - name: Build Storybook
+        run: pnpm storybook:build
+
+      - name: Compare screenshots
+        if: ${{ !inputs.update }}
+        run: pnpm test:visual
+
+      - name: Write new baseline screenshots
+        if: ${{ inputs.update }}
+        run: pnpm test:visual:update
+
+      - name: Upload screenshot differences
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-differences
+          path: packages/mantine-react-table/tests/test-results
+          retention-days: 14
+
+      - name: Upload new baseline screenshots
+        if: ${{ inputs.update }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: snapshots
+          path: packages/mantine-react-table/tests/snapshots
+          retention-days: 14

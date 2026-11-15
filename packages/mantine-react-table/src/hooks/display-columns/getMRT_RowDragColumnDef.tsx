@@ -1,3 +1,5 @@
+'use no memo';
+
 import { type RefObject } from 'react';
 
 import { MRT_TableBodyRowGrabHandle } from '../../components/body/MRT_TableBodyRowGrabHandle';

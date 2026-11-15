@@ -1,3 +1,5 @@
+'use no memo';
+
 import { Highlight, type HighlightProps } from '@mantine/core';
 
 import {

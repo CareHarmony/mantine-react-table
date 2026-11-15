@@ -1,3 +1,5 @@
+'use no memo';
+
 import classes from './MRT_ShowHideColumnsMenuItems.module.css';
 
 import {

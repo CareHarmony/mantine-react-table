@@ -1,3 +1,6 @@
+'use no memo';
+/* eslint-disable react-hooks/rules-of-hooks -- useMRT_TableOptions fixes the virtualization flags at initialization, so the early return never changes the hook order */
+
 import { useCallback } from 'react';
 
 import { type Range, useVirtualizer } from '@tanstack/react-virtual';
@@ -11,6 +14,7 @@ import {
 } from '../types';
 import { parseFromValuesOrFunc } from '../utils/utils';
 import { extraIndexRangeExtractor } from '../utils/virtualization.utils';
+import { useMRT_VirtualizerScrollElement } from './useMRT_VirtualizerScrollElement';
 
 export const useMRT_RowVirtualizer = <
   TData extends MRT_RowData,
@@ -29,7 +33,7 @@ export const useMRT_RowVirtualizer = <
       rowVirtualizerInstanceRef,
       rowVirtualizerOptions,
     },
-    refs: { tableContainerRef },
+    refs: { scrollAreaViewportRef, tableContainerRef },
   } = table;
   const { density, draggingRow, expanded } = getState();
 
@@ -60,7 +64,8 @@ export const useMRT_RowVirtualizer = <
           ? 100
           : 0
         : normalRowHeight,
-    getScrollElement: () => tableContainerRef.current,
+    getScrollElement: () =>
+      scrollAreaViewportRef.current ?? tableContainerRef.current,
     measureElement:
       typeof window !== 'undefined' &&
       navigator.userAgent.indexOf('Firefox') === -1
@@ -82,6 +87,8 @@ export const useMRT_RowVirtualizer = <
     ),
     ...rowVirtualizerProps,
   }) as unknown as MRT_RowVirtualizer<TScrollElement, TItemElement>;
+
+  useMRT_VirtualizerScrollElement(rowVirtualizer);
 
   rowVirtualizer.virtualRows = rowVirtualizer.getVirtualItems() as any;
 

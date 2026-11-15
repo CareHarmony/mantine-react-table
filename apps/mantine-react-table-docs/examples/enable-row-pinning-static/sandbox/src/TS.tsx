@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import {
   MantineReactTable,
-  MRT_ColumnDef,
+  type MRT_ColumnDef,
   useMantineReactTable,
-} from 'mantine-react-table';
-import { data, Person } from './makeData';
+} from '@careharmony/mantine-react-table-ng';
+import { data, type Person } from './makeData';
 
 const Example = () => {
   const columns = useMemo<MRT_ColumnDef<Person>[]>(

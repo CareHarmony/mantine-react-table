@@ -1,3 +1,5 @@
+'use no memo';
+
 import { MRT_TableBodyRowPinButton } from '../../components/body/MRT_TableBodyRowPinButton';
 import {
   type MRT_ColumnDef,

@@ -1,3 +1,5 @@
+'use no memo';
+
 import { type DragEvent, type RefObject } from 'react';
 
 import { type ActionIconProps } from '@mantine/core';

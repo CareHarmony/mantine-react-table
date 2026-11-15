@@ -1,3 +1,5 @@
+'use no memo';
+
 import clsx from 'clsx';
 
 import classes from './MRT_TableHeadCell.module.css';
@@ -25,6 +27,7 @@ import {
   type MRT_RowData,
   type MRT_TableInstance,
 } from '../../types';
+import { getMRT_HeaderView } from '../../utils/snapshot.utils';
 import { parseCSSVarId } from '../../utils/style.utils';
 import { parseFromValuesOrFunc } from '../../utils/utils';
 import { MRT_ColumnActionMenu } from '../menus/MRT_ColumnActionMenu';
@@ -38,11 +41,13 @@ interface Props<TData extends MRT_RowData> extends TableThProps {
 
 export const MRT_TableHeadCell = <TData extends MRT_RowData>({
   columnVirtualizer,
-  header,
+  header: headerProp,
   renderedHeaderIndex = 0,
   table,
   ...rest
 }: Props<TData>) => {
+  //a view has a new identity per table reference, which compiled render callbacks need
+  const header = getMRT_HeaderView(table, headerProp);
   const direction = useDirection();
   const {
     getState,

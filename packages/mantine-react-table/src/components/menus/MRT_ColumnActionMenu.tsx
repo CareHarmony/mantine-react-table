@@ -1,3 +1,5 @@
+'use no memo';
+
 import classes from './MRT_ColumnActionMenu.module.css';
 
 import { ActionIcon, Menu, type MenuProps, Tooltip } from '@mantine/core';

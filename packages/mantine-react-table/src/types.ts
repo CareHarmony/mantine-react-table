@@ -59,10 +59,12 @@ import {
   type ProgressProps,
   type RadioProps,
   type RangeSliderProps,
+  type ScrollAreaProps,
   type SelectProps,
   type SkeletonProps,
   type SwitchProps,
   type TableProps,
+  type TableScrollContainerProps,
   type TableTbodyProps,
   type TableTdProps,
   type TableTfootProps,
@@ -91,12 +93,20 @@ export type Xor<A, B> =
   | Prettify<{ [k in keyof A]?: never } & B>
   | Prettify<{ [k in keyof B]?: never } & A>;
 
+//object literals do not accept `data-*` keys unless the type declares them
+export type HTMLDataAttributes = { [key: `data-${string}`]: unknown };
+
 export type HTMLPropsRef<T extends HTMLElement> = {
-  ref?: Ref<T> | null;
-} & Omit<
-  HTMLProps<T>,
-  'color' | 'data' | 'label' | 'ref' | 'size' | 'style' | 'type'
->;
+  ref?: null | Ref<T>;
+} & HTMLDataAttributes &
+  Omit<
+    HTMLProps<T>,
+    'color' | 'data' | 'label' | 'ref' | 'size' | 'style' | 'type'
+  >;
+
+//the HTML `title` attribute is a string, the Mantine Modal `title` is a ReactNode
+export type MRT_ModalProps = Omit<HTMLPropsRef<HTMLDivElement>, 'title'> &
+  Partial<ModalProps>;
 
 export type MantineShade = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
@@ -291,6 +301,7 @@ export type MRT_TableInstance<TData extends MRT_RowData> = {
     editInputRefs: RefObject<Record<string, HTMLInputElement>>;
     filterInputRefs: RefObject<Record<string, HTMLInputElement>>;
     lastSelectedRowId: RefObject<null | string>;
+    scrollAreaViewportRef: RefObject<HTMLDivElement | null>;
     searchInputRef: RefObject<HTMLInputElement | null>;
     tableContainerRef: RefObject<HTMLDivElement | null>;
     tableFooterRef: RefObject<HTMLTableSectionElement | null>;
@@ -759,6 +770,14 @@ export type MRT_CreateTableFeature<
  * See the full props list on the official docs site:
  * @link https://www.mantine-react-table.com/docs/api/table-options
  */
+/**
+ * Props for the optional `Table.ScrollContainer` wrapper (`withScrollArea`).
+ * Extra `ScrollArea` props pass through to the underlying Mantine `ScrollArea`.
+ */
+export type MRT_ScrollAreaProps = HTMLPropsRef<HTMLDivElement> &
+  Partial<Omit<ScrollAreaProps, 'type'>> &
+  Partial<TableScrollContainerProps>;
+
 export type MRT_TableOptions<TData extends MRT_RowData> = {
   columnFilterDisplayMode?: 'custom' | 'popover' | 'subheader';
   columnFilterModeOptions?: Array<
@@ -885,8 +904,8 @@ export type MRT_TableOptions<TData extends MRT_RowData> = {
     | ((props: {
         row: MRT_Row<TData>;
         table: MRT_TableInstance<TData>;
-      }) => HTMLPropsRef<HTMLDivElement> & Partial<ModalProps>)
-    | (HTMLPropsRef<HTMLDivElement> & Partial<ModalProps>);
+      }) => MRT_ModalProps)
+    | MRT_ModalProps;
   mantineDetailPanelProps?:
     | ((props: {
         row: MRT_Row<TData>;
@@ -897,8 +916,8 @@ export type MRT_TableOptions<TData extends MRT_RowData> = {
     | ((props: {
         row: MRT_Row<TData>;
         table: MRT_TableInstance<TData>;
-      }) => HTMLPropsRef<HTMLDivElement> & Partial<ModalProps>)
-    | (HTMLPropsRef<HTMLDivElement> & Partial<ModalProps>);
+      }) => MRT_ModalProps)
+    | MRT_ModalProps;
   mantineEditSelectProps?:
     | ((props: {
         cell: MRT_Cell<TData, MRT_CellValue>;
@@ -1002,14 +1021,17 @@ export type MRT_TableOptions<TData extends MRT_RowData> = {
     | ((props: {
         isTopToolbar: boolean;
         table: MRT_TableInstance<TData>;
-      }) => HTMLPropsRef<HTMLDivElement> & ProgressProps)
-    | (HTMLPropsRef<HTMLDivElement> & ProgressProps);
+      }) => HTMLPropsRef<HTMLDivElement> & Partial<ProgressProps>)
+    | (HTMLPropsRef<HTMLDivElement> & Partial<ProgressProps>);
   mantineRowDragHandleProps?:
     | ((props: {
         row: MRT_Row<TData>;
         table: MRT_TableInstance<TData>;
       }) => HTMLPropsRef<HTMLButtonElement> & Partial<ActionIconProps>)
     | (HTMLPropsRef<HTMLButtonElement> & Partial<ActionIconProps>);
+  mantineScrollAreaProps?:
+    | ((props: { table: MRT_TableInstance<TData> }) => MRT_ScrollAreaProps)
+    | MRT_ScrollAreaProps;
   mantineSearchTextInputProps?:
     | ((props: {
         table: MRT_TableInstance<TData>;
@@ -1261,6 +1283,7 @@ export type MRT_TableOptions<TData extends MRT_RowData> = {
    * Manage state externally any way you want, then pass it back into MRT.
    */
   state?: Partial<MRT_TableState<TData>>;
+  withScrollArea?: boolean;
 } & Omit<
   Partial<TableOptions<TData>>,
   | 'columns'

@@ -1,6 +1,6 @@
 export const assignRef = <T>(
-  ref: ((instance: T | null) => void) | { current: T | null } | null | undefined,
-  value: T | null,
+  ref: ((instance: null | T) => void) | { current: null | T } | null | undefined,
+  value: null | T,
 ) => {
   if (typeof ref === 'function') {
     ref(value);

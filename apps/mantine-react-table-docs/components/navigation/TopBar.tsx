@@ -23,7 +23,7 @@ import {
 import { useMediaQuery } from '@mantine/hooks';
 import docsearch from '@docsearch/js';
 import '@docsearch/css';
-import { getPrimaryColor } from 'mantine-react-table';
+import { getPrimaryColor } from '@careharmony/mantine-react-table-ng';
 import { useRouter } from 'next/router';
 
 interface Props {
@@ -47,7 +47,7 @@ export const TopBar = ({ navOpen, setNavOpen }: Props) => {
       docsearch({
         appId: 'GA9W0E15I8',
         apiKey: 'd1d8da70283d84d7669881d993eff727',
-        indexName: 'mantine-react-table',
+        indexName: '@careharmony/mantine-react-table-ng',
         container: '#docsearch',
       });
     }

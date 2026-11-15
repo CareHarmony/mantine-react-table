@@ -116,7 +116,7 @@ export const SelectionEnabledWithRowClick = () => (
     enableRowSelection
     mantineTableBodyRowProps={({ renderedRowIndex, row, table }) => ({
       onClick: (event) =>
-        getMRT_RowSelectionHandler()({ event, renderedRowIndex, row, table }),
+        getMRT_RowSelectionHandler({ renderedRowIndex, row, table })(event),
       style: {
         cursor: 'pointer',
         userSelect: 'none',

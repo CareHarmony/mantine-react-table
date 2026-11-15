@@ -1,3 +1,5 @@
+'use no memo';
+
 import {
   type MRT_ColumnDef,
   type MRT_RowData,

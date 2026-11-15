@@ -11,6 +11,28 @@ import {
   type MRT_RowData,
 } from '../types';
 
+//the multi-select filter input clears itself to an empty array, which must remove the filter like '' does
+const isBlankFilterValue = (val: any) =>
+  !val || (Array.isArray(val) && !val.length);
+
+/**
+ * Mantine 8+ date inputs emit 'YYYY-MM-DD' strings. When the cell value is a
+ * Date, the filter value is read as a Date at local midnight, so the two
+ * compare as dates and not as text.
+ */
+const getDateFilterValue = (cellValue: unknown, filterValue: unknown) => {
+  if (!(cellValue instanceof Date)) return undefined;
+  if (filterValue instanceof Date) return filterValue;
+  if (typeof filterValue !== 'string' || !filterValue) return undefined;
+  const date = new Date(
+    filterValue.includes('T') ? filterValue : `${filterValue}T00:00:00`,
+  );
+  return isNaN(+date) ? undefined : date;
+};
+
+//a date filter picks a day, so dates compare by their local day and not by time
+const getDay = (date: Date) => new Date(date).setHours(0, 0, 0, 0);
+
 const fuzzy = <TData extends MRT_RowData>(
   row: Row<TData>,
   columnId: string,
@@ -24,7 +46,7 @@ const fuzzy = <TData extends MRT_RowData>(
   return itemRank.passed;
 };
 
-fuzzy.autoRemove = (val: any) => !val;
+fuzzy.autoRemove = isBlankFilterValue;
 
 const contains = <TData extends MRT_RowData>(
   row: Row<TData>,
@@ -38,7 +60,7 @@ const contains = <TData extends MRT_RowData>(
     .trim()
     .includes(filterValue.toString().toLowerCase().trim());
 
-contains.autoRemove = (val: any) => !val;
+contains.autoRemove = isBlankFilterValue;
 
 const startsWith = <TData extends MRT_RowData>(
   row: Row<TData>,
@@ -52,7 +74,7 @@ const startsWith = <TData extends MRT_RowData>(
     .trim()
     .startsWith(filterValue.toString().toLowerCase().trim());
 
-startsWith.autoRemove = (val: any) => !val;
+startsWith.autoRemove = isBlankFilterValue;
 
 const endsWith = <TData extends MRT_RowData>(
   row: Row<TData>,
@@ -66,39 +88,50 @@ const endsWith = <TData extends MRT_RowData>(
     .trim()
     .endsWith(filterValue.toString().toLowerCase().trim());
 
-endsWith.autoRemove = (val: any) => !val;
+endsWith.autoRemove = isBlankFilterValue;
 
 const equals = <TData extends MRT_RowData>(
   row: Row<TData>,
   id: string,
   filterValue: number | string,
-) =>
-  row.getValue<number | string>(id)?.toString().toLowerCase().trim() ===
-  filterValue?.toString().toLowerCase().trim();
+) => {
+  const dateFilterValue = getDateFilterValue(row.getValue(id), filterValue);
+  if (dateFilterValue) {
+    return getDay(row.getValue<Date>(id)) === getDay(dateFilterValue);
+  }
+  return (
+    row.getValue<number | string>(id)?.toString().toLowerCase().trim() ===
+    filterValue?.toString().toLowerCase().trim()
+  );
+};
 
-equals.autoRemove = (val: any) => !val;
+equals.autoRemove = isBlankFilterValue;
 
 const notEquals = <TData extends MRT_RowData>(
   row: Row<TData>,
   id: string,
   filterValue: number | string,
-) =>
-  row.getValue<number | string>(id)?.toString().toLowerCase().trim() !==
-  filterValue.toString().toLowerCase().trim();
+) => !equals(row, id, filterValue);
 
-notEquals.autoRemove = (val: any) => !val;
+notEquals.autoRemove = isBlankFilterValue;
 
 const greaterThan = <TData extends MRT_RowData>(
   row: Row<TData>,
   id: string,
-  filterValue: number | string,
-) =>
-  !isNaN(+filterValue) && !isNaN(+row.getValue<number | string>(id))
+  rawFilterValue: number | string,
+) => {
+  const dateFilterValue = getDateFilterValue(row.getValue(id), rawFilterValue);
+  if (dateFilterValue) {
+    return getDay(row.getValue<Date>(id)) > getDay(dateFilterValue);
+  }
+  const filterValue = rawFilterValue;
+  return !isNaN(+filterValue) && !isNaN(+row.getValue<number | string>(id))
     ? +row.getValue<number | string>(id) > +filterValue
     : row.getValue<number | string>(id)?.toString().toLowerCase().trim() >
-      filterValue?.toString().toLowerCase().trim();
+        filterValue?.toString().toLowerCase().trim();
+};
 
-greaterThan.autoRemove = (val: any) => !val;
+greaterThan.autoRemove = isBlankFilterValue;
 
 const greaterThanOrEqualTo = <TData extends MRT_RowData>(
   row: Row<TData>,
@@ -106,19 +139,25 @@ const greaterThanOrEqualTo = <TData extends MRT_RowData>(
   filterValue: number | string,
 ) => equals(row, id, filterValue) || greaterThan(row, id, filterValue);
 
-greaterThanOrEqualTo.autoRemove = (val: any) => !val;
+greaterThanOrEqualTo.autoRemove = isBlankFilterValue;
 
 const lessThan = <TData extends MRT_RowData>(
   row: Row<TData>,
   id: string,
-  filterValue: number | string,
-) =>
-  !isNaN(+filterValue) && !isNaN(+row.getValue<number | string>(id))
+  rawFilterValue: number | string,
+) => {
+  const dateFilterValue = getDateFilterValue(row.getValue(id), rawFilterValue);
+  if (dateFilterValue) {
+    return getDay(row.getValue<Date>(id)) < getDay(dateFilterValue);
+  }
+  const filterValue = rawFilterValue;
+  return !isNaN(+filterValue) && !isNaN(+row.getValue<number | string>(id))
     ? +row.getValue<number | string>(id) < +filterValue
     : row.getValue<number | string>(id)?.toString().toLowerCase().trim() <
-      filterValue?.toString().toLowerCase().trim();
+        filterValue?.toString().toLowerCase().trim();
+};
 
-lessThan.autoRemove = (val: any) => !val;
+lessThan.autoRemove = isBlankFilterValue;
 
 const lessThanOrEqualTo = <TData extends MRT_RowData>(
   row: Row<TData>,
@@ -126,7 +165,7 @@ const lessThanOrEqualTo = <TData extends MRT_RowData>(
   filterValue: number | string,
 ) => equals(row, id, filterValue) || lessThan(row, id, filterValue);
 
-lessThanOrEqualTo.autoRemove = (val: any) => !val;
+lessThanOrEqualTo.autoRemove = isBlankFilterValue;
 
 const between = <TData extends MRT_RowData>(
   row: Row<TData>,
@@ -141,7 +180,7 @@ const between = <TData extends MRT_RowData>(
     (['', undefined] as any[]).includes(filterValues[1]) ||
     lessThan(row, id, filterValues[1]));
 
-between.autoRemove = (val: any) => !val;
+between.autoRemove = isBlankFilterValue;
 
 const betweenInclusive = <TData extends MRT_RowData>(
   row: Row<TData>,
@@ -156,7 +195,7 @@ const betweenInclusive = <TData extends MRT_RowData>(
     (['', undefined] as any[]).includes(filterValues[1]) ||
     lessThanOrEqualTo(row, id, filterValues[1]));
 
-betweenInclusive.autoRemove = (val: any) => !val;
+betweenInclusive.autoRemove = isBlankFilterValue;
 
 const empty = <TData extends MRT_RowData>(
   row: Row<TData>,
@@ -164,7 +203,7 @@ const empty = <TData extends MRT_RowData>(
   _filterValue: number | string,
 ) => !row.getValue<number | string>(id)?.toString().trim();
 
-empty.autoRemove = (val: any) => !val;
+empty.autoRemove = isBlankFilterValue;
 
 const notEmpty = <TData extends MRT_RowData>(
   row: Row<TData>,
@@ -172,7 +211,7 @@ const notEmpty = <TData extends MRT_RowData>(
   _filterValue: number | string,
 ) => !!row.getValue<number | string>(id)?.toString().trim();
 
-notEmpty.autoRemove = (val: any) => !val;
+notEmpty.autoRemove = isBlankFilterValue;
 
 export const MRT_FilterFns = {
   ...filterFns,

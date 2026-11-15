@@ -1,3 +1,5 @@
+'use no memo';
+
 import { ActionIcon, type ActionIconProps, Tooltip } from '@mantine/core';
 
 import {

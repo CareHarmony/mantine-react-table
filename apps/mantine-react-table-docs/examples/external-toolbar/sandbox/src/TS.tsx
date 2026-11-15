@@ -1,6 +1,6 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css'; //if using mantine date picker features
-import 'mantine-react-table/styles.css'; //make sure MRT styles were imported in your app root (once)
+import '@careharmony/mantine-react-table-ng/styles.css'; //make sure MRT styles were imported in your app root (once)
 import {
   MRT_GlobalFilterTextInput,
   MRT_ShowHideColumnsButton,
@@ -11,7 +11,7 @@ import {
   useMantineReactTable,
   type MRT_ColumnDef,
   MRT_TableContainer,
-} from 'mantine-react-table';
+} from '@careharmony/mantine-react-table-ng';
 import {
   ActionIcon,
   Box,
@@ -55,16 +55,13 @@ const Example = () => {
     <Box style={{ border: 'gray 2px dashed', padding: '16px' }}>
       {/* Our Custom External Top Toolbar */}
       <Flex
+        direction={{ base: 'column', sm: 'row' }}
         style={(theme) => ({
           backgroundColor: rgba(theme.colors.blue[3], 0.2),
           borderRadius: '4px',
-          flexDirection: 'row',
           gap: '16px',
           justifyContent: 'space-between',
           padding: '24px 16px',
-          '@media max-width: 768px': {
-            flexDirection: 'column',
-          },
         })}
       >
         <Box>

@@ -63,7 +63,7 @@ export const ColumnPinningDisabledPerColumn = () => (
     columns={[
       {
         accessorKey: 'firstName',
-        enableColumnPinning: false,
+        enablePinning: false,
         header: 'First Name',
       },
       {

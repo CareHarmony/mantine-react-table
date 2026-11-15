@@ -1,3 +1,5 @@
+'use no memo';
+
 import { type ReactNode } from 'react';
 
 import { Flex, Tooltip } from '@mantine/core';

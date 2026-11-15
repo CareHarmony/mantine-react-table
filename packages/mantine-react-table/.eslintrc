@@ -5,8 +5,9 @@
     "plugin:perfectionist/recommended-natural-legacy",
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "perfectionist"],
+  "plugins": ["@typescript-eslint", "perfectionist", "react-hooks"],
   "rules": {
+    "react-hooks/rules-of-hooks": "error",
     "no-duplicate-imports": "warn",
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/ban-types": "off",
@@ -52,6 +53,13 @@
       },
     ],
   },
+  "overrides": [
+    {
+      // Consumer-style fixtures must be valid React Compiler input.
+      "files": ["tests/unit/**/*.tsx"],
+      "extends": ["plugin:react-hooks/recommended"],
+    },
+  ],
   "root": true,
-  "ignorePatterns": ["dist/", "locales/", "node_modules/"],
+  "ignorePatterns": ["coverage/", "dist/", "locales/", "node_modules/", "storybook-static/", "tests/test-results/", "playwright-report/"],
 }

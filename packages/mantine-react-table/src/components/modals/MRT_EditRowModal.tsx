@@ -1,3 +1,5 @@
+'use no memo';
+
 import { Flex, Modal, type ModalProps, Stack } from '@mantine/core';
 
 import {

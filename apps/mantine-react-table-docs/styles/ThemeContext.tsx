@@ -1,12 +1,31 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useState } from 'react';
 import {
   type MantineColor,
   MantineProvider,
   createTheme,
   useMantineColorScheme,
 } from '@mantine/core';
-import { type MantineShade } from 'mantine-react-table';
+import { useLocalStorage } from '@mantine/hooks';
+import {
+  CodeHighlightAdapterProvider,
+  createHighlightJsAdapter,
+} from '@mantine/code-highlight';
+import hljs from 'highlight.js/lib/core';
+import bash from 'highlight.js/lib/languages/bash';
+import css from 'highlight.js/lib/languages/css';
+import javascript from 'highlight.js/lib/languages/javascript';
+import typescript from 'highlight.js/lib/languages/typescript';
+import { type MantineShade } from '@careharmony/mantine-react-table-ng';
 import { useContext } from 'react';
+
+// highlight.js has no JSX grammar. Its JavaScript and TypeScript grammars parse JSX.
+hljs.registerLanguage('bash', bash);
+hljs.registerLanguage('css', css);
+hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('typescript', typescript);
+hljs.registerAliases(['js', 'jsx'], { languageName: 'javascript' });
+hljs.registerAliases(['ts', 'tsx'], { languageName: 'typescript' });
+const highlightJsAdapter = createHighlightJsAdapter(hljs);
 
 const ThemeContext = createContext<{
   darkDark: boolean;
@@ -18,21 +37,14 @@ const ThemeContext = createContext<{
 }>({} as any);
 
 export const ThemeContextProvider = ({ children }) => {
-  const [darkDark, setDarkDark] = useState<boolean>(true);
+  //read after hydration, so the server and the first client render match
+  const [darkDark, setDarkDark] = useLocalStorage<boolean>({
+    defaultValue: false,
+    getInitialValueInEffect: true,
+    key: 'darkDark',
+  });
   const [primaryColor, setPrimaryColor] = useState<MantineColor>('teal');
   const [primaryShade, setPrimaryShade] = useState<MantineShade>(7);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setDarkDark(localStorage.getItem('darkDark') === 'true');
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('darkDark', darkDark.toString());
-    }
-  }, [darkDark]);
 
   return (
     <MantineProvider
@@ -109,7 +121,9 @@ export const ThemeContextProvider = ({ children }) => {
           setPrimaryShade,
         }}
       >
-        {children}
+        <CodeHighlightAdapterProvider adapter={highlightJsAdapter}>
+          {children}
+        </CodeHighlightAdapterProvider>
       </ThemeContext.Provider>
     </MantineProvider>
   );

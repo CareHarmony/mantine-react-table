@@ -1,3 +1,5 @@
+'use no memo';
+
 import { MRT_ToggleRowActionMenuButton } from '../../components/buttons/MRT_ToggleRowActionMenuButton';
 import {
   type MRT_ColumnDef,

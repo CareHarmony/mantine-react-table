@@ -1,3 +1,5 @@
+'use no memo';
+
 import { useMemo, useRef, useState } from 'react';
 
 import { useReactTable } from '@tanstack/react-table';
@@ -50,15 +52,18 @@ import { useMRT_Effects } from './useMRT_Effects';
 /**
  * The MRT hook that wraps the TanStack useReactTable hook and adds additional functionality
  * @param definedTableOptions - table options with proper defaults set
+ * @param rerender - re-renders the owner of the table instance and changes the table reference
  * @returns the MRT table instance
  */
 export const useMRT_TableInstance = <TData extends MRT_RowData>(
   definedTableOptions: MRT_DefinedTableOptions<TData>,
+  rerender?: () => void,
 ): MRT_TableInstance<TData> => {
   const lastSelectedRowId = useRef<null | string>(null);
   const bottomToolbarRef = useRef<HTMLDivElement>(null);
   const editInputRefs = useRef<Record<string, HTMLInputElement>>({});
   const filterInputRefs = useRef<Record<string, HTMLInputElement>>({});
+  const scrollAreaViewportRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableHeadCellRefs = useRef<Record<string, HTMLTableCellElement>>({});
@@ -228,7 +233,8 @@ export const useMRT_TableInstance = <TData extends MRT_RowData>(
             ).fill(null),
           ].map(() =>
             Object.assign(
-              {},
+              //`prepareColumns` skips a custom accessorFn for rows with this key
+              { [Symbol.for('mrt-skeleton-row')]: true },
               ...getAllLeafColumnDefs(statefulTableOptions.columns).map(
                 (col) => ({
                   [getColumnId(col)]: null,
@@ -259,6 +265,7 @@ export const useMRT_TableInstance = <TData extends MRT_RowData>(
     editInputRefs,
     filterInputRefs,
     lastSelectedRowId,
+    scrollAreaViewportRef,
     searchInputRef,
     tableContainerRef,
     tableFooterRef,
@@ -307,7 +314,7 @@ export const useMRT_TableInstance = <TData extends MRT_RowData>(
   table.setShowToolbarDropZone =
     statefulTableOptions.onShowToolbarDropZoneChange ?? setShowToolbarDropZone;
 
-  useMRT_Effects(table);
+  useMRT_Effects(table, rerender);
 
   return table;
 };

@@ -1,3 +1,5 @@
+'use no memo';
+
 import clsx from 'clsx';
 
 import commonClasses from './common.styles.module.css';

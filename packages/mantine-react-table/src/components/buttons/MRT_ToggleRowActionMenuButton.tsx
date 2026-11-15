@@ -1,3 +1,5 @@
+'use no memo';
+
 import { type MouseEvent } from 'react';
 
 import { ActionIcon, Tooltip } from '@mantine/core';

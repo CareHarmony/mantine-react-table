@@ -10,6 +10,8 @@ export const MiniNav = () => {
   const { colorScheme } = useMantineColorScheme();
 
   useEffect(() => {
+    //the headings come from the rendered page, so they can only be read after mount
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHeadings(
       document.querySelectorAll(isXLDesktop ? 'h2, h3, h4, h5' : 'h3'),
     );

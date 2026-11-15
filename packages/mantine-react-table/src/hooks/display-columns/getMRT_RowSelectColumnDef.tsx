@@ -1,3 +1,5 @@
+'use no memo';
+
 import { MRT_SelectCheckbox } from '../../components/inputs/MRT_SelectCheckbox';
 import {
   type MRT_ColumnDef,

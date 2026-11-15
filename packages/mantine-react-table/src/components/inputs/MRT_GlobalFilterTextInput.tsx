@@ -1,3 +1,5 @@
+'use no memo';
+
 import clsx from 'clsx';
 
 import classes from './MRT_GlobalFilterTextInput.module.css';
@@ -12,7 +14,6 @@ import {
   type TextInputProps,
   Tooltip,
 } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
 
 import { type MRT_RowData, type MRT_TableInstance } from '../../types';
 import { parseFromValuesOrFunc } from '../../utils/utils';
@@ -51,14 +52,15 @@ export const MRT_GlobalFilterTextInput = <TData extends MRT_RowData>({
   const isMounted = useRef(false);
   const [searchValue, setSearchValue] = useState(globalFilter ?? '');
 
-  const [debouncedSearchValue] = useDebouncedValue(
-    searchValue,
-    manualFiltering ? 500 : 250,
-  );
-
+  //send the search value to the table once typing pauses. The timer restarts on
+  //every change, so text retyped right after a clear is sent again.
   useEffect(() => {
-    setGlobalFilter(debouncedSearchValue || undefined);
-  }, [debouncedSearchValue]);
+    const timeout = setTimeout(
+      () => setGlobalFilter(searchValue || undefined),
+      manualFiltering ? 500 : 250,
+    );
+    return () => clearTimeout(timeout);
+  }, [searchValue]);
 
   const handleClear = () => {
     setSearchValue('');

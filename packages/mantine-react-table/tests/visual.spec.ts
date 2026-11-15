@@ -10,10 +10,9 @@
  * baseline is available for comparison on any branch.
  */
 
+import { expect, test } from '@playwright/test';
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
-
-import { expect, test } from '@playwright/test';
 
 // ---------------------------------------------------------------------------
 // Load the Storybook story index

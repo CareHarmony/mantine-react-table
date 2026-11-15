@@ -1,6 +1,6 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css'; //if using mantine date picker features
-import 'mantine-react-table/styles.css'; //make sure MRT styles were imported in your app root (once)
+import '@careharmony/mantine-react-table-ng/styles.css'; //make sure MRT styles were imported in your app root (once)
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   MantineReactTable,
@@ -8,7 +8,7 @@ import {
   type MRT_ColumnDef,
   type MRT_SortingState,
   type MRT_RowVirtualizer,
-} from 'mantine-react-table';
+} from '@careharmony/mantine-react-table-ng';
 import { makeData, type Person } from './makeData';
 
 const Example = () => {
@@ -61,16 +61,9 @@ const Example = () => {
   //optionally access the underlying virtualizer instance
   const rowVirtualizerInstanceRef = useRef<MRT_RowVirtualizer>(null);
 
-  const [data, setData] = useState<Person[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  //create the 10,000 rows once, when the component mounts
+  const [data] = useState<Person[]>(() => makeData(10_000));
   const [sorting, setSorting] = useState<MRT_SortingState>([]);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setData(makeData(10_000));
-      setIsLoading(false);
-    }
-  }, []);
 
   useEffect(() => {
     try {
@@ -91,7 +84,7 @@ const Example = () => {
     enableRowVirtualization: true,
     mantineTableContainerProps: { style: { maxHeight: '600px' } },
     onSortingChange: setSorting,
-    state: { isLoading, sorting },
+    state: { sorting },
     rowVirtualizerOptions: { overscan: 8 }, //optionally customize the virtualizer
   });
 

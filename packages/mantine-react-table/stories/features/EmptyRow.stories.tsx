@@ -1,11 +1,8 @@
-import { useState } from 'react';
-
-import { Center, Flex, Group, Stack, Switch, Text } from '@mantine/core';
+import { Center, Text } from '@mantine/core';
 
 import {
   MantineReactTable,
   type MRT_ColumnDef,
-  MRT_EditActionButtons,
   useMantineReactTable,
 } from '../../src';
 
@@ -92,11 +89,12 @@ export const EmptyRowContextMenu = () => {
 };
 
 export const EmptyRowExplanationPannel = () => {
-  //Now that empty row is an actual row, detail pannel is available for empty row as well
+  //The empty row renders no detail panel, so the explanation goes in the fallback
   const table = useMantineReactTable({
     columns,
     data,
-    renderDetailPanel: () => (
+    renderDetailPanel: ({ row }) => <Center>{row.original.city}</Center>,
+    renderEmptyRowsFallback: () => (
       <Center>
         There are no records to display, check if there are any active filters
         on the table, clearing them might help.

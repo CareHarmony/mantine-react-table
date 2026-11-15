@@ -1,3 +1,5 @@
+'use no memo';
+
 import clsx from 'clsx';
 
 import classes from './MRT_TableBodyCell.module.css';
@@ -29,6 +31,7 @@ import {
   type MRT_TableInstance,
   type MRT_VirtualItem,
 } from '../../types';
+import { getMRT_CellView } from '../../utils/snapshot.utils';
 import { parseCSSVarId } from '../../utils/style.utils';
 import { parseFromValuesOrFunc } from '../../utils/utils';
 import { MRT_CopyButton } from '../buttons/MRT_CopyButton';
@@ -46,7 +49,7 @@ interface Props<TData extends MRT_RowData, TValue = MRT_CellValue>
 }
 
 export const MRT_TableBodyCell = <TData extends MRT_RowData>({
-  cell,
+  cell: cellProp,
   numRows = 1,
   renderedColumnIndex = 0,
   renderedRowIndex = 0,
@@ -55,6 +58,8 @@ export const MRT_TableBodyCell = <TData extends MRT_RowData>({
   virtualCell,
   ...rest
 }: Props<TData>) => {
+  //a view has a new identity per table reference, which compiled render callbacks need
+  const cell = getMRT_CellView(table, cellProp);
   const direction = useDirection();
 
   const {

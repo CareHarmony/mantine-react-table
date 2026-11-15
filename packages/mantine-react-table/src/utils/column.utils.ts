@@ -32,6 +32,17 @@ export const getAllLeafColumnDefs = <TData extends MRT_RowData>(
   return allLeafColumnDefs;
 };
 
+/**
+ * Marks the placeholder rows that `useMRT_TableInstance` generates for the
+ * loading skeletons. The same `Symbol.for` key is written there.
+ */
+export const skeletonRowKey = Symbol.for('mrt-skeleton-row');
+
+export const isSkeletonRow = (originalRow: unknown): boolean =>
+  !!(originalRow as null | Record<symbol, unknown>)?.[skeletonRowKey];
+
+const skeletonSafeAccessorFns = new WeakSet<object>();
+
 export const prepareColumns = <TData extends MRT_RowData>({
   columnDefs,
   tableOptions,
@@ -72,12 +83,34 @@ export const prepareColumns = <TData extends MRT_RowData>({
           );
       }
 
+      //skeleton rows hold no data, so a custom accessorFn must not read them
+      const { accessorFn } = columnDef;
+      if (accessorFn && !skeletonSafeAccessorFns.has(accessorFn)) {
+        columnDef.accessorFn = ((originalRow: TData, index: number) =>
+          isSkeletonRow(originalRow)
+            ? null
+            : (accessorFn as (originalRow: TData, index: number) => any)(
+                originalRow,
+                index,
+              )) as MRT_ColumnDef<TData>['accessorFn'];
+        skeletonSafeAccessorFns.add(columnDef.accessorFn as object);
+      }
+
       //assign filterFns
-      if (Object.keys(filterFns).includes(columnFilterFns[columnDef.id])) {
-        columnDef.filterFn =
-          filterFns[columnFilterFns[columnDef.id]] ?? filterFns.fuzzy;
-        (columnDef as MRT_DefinedColumnDef<TData>)._filterFn =
-          columnFilterFns[columnDef.id];
+      //a column added after the first render has no `columnFilterFns` state yet
+      const filterMode: MRT_FilterOption | undefined =
+        columnFilterFns[columnDef.id] ??
+        (columnDef as MRT_DefinedColumnDef<TData>)._filterFn ??
+        (columnDef.filterFn instanceof Function
+          ? undefined
+          : ((columnDef.filterFn as MRT_FilterOption | undefined) ??
+            getDefaultColumnFilterFn(columnDef)));
+      if (filterMode !== undefined) {
+        if (Object.keys(filterFns).includes(filterMode)) {
+          columnDef.filterFn = filterFns[filterMode] ?? filterFns.fuzzy;
+        }
+        //custom filter modes that are not in `filterFns` still need to be tracked
+        (columnDef as MRT_DefinedColumnDef<TData>)._filterFn = filterMode;
       }
 
       //assign sortingFns

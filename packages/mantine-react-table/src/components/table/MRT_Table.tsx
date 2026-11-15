@@ -1,3 +1,5 @@
+'use no memo';
+
 import clsx from 'clsx';
 
 import classes from './MRT_Table.module.css';
@@ -9,13 +11,18 @@ import {
   lighten,
   Table,
   type TableProps,
+  type TableScrollContainerProps,
   useMantineColorScheme,
 } from '@mantine/core';
 
 import { useMRT_ColumnVirtualizer } from '../../hooks/useMRT_ColumnVirtualizer';
-import { type MRT_RowData, type MRT_TableInstance } from '../../types';
+import {
+  type MRT_RowData,
+  type MRT_ScrollAreaProps,
+  type MRT_TableInstance,
+} from '../../types';
 import { parseCSSVarId } from '../../utils/style.utils';
-import { parseFromValuesOrFunc } from '../../utils/utils';
+import { assignRef, parseFromValuesOrFunc } from '../../utils/utils';
 import { Memo_MRT_TableBody, MRT_TableBody } from '../body/MRT_TableBody';
 import { MRT_TableFooter } from '../footer/MRT_TableFooter';
 import { MRT_TableHead } from '../head/MRT_TableHead';
@@ -36,8 +43,10 @@ export const MRT_Table = <TData extends MRT_RowData>({
       enableTableFooter,
       enableTableHead,
       layoutMode,
+      mantineScrollAreaProps,
       mantineTableProps,
       memoMode,
+      withScrollArea,
     },
   } = table;
   const { columnSizing, columnSizingInfo, columnVisibility, density } =
@@ -74,7 +83,7 @@ export const MRT_Table = <TData extends MRT_RowData>({
 
   const { stripedColor } = tableProps;
 
-  return (
+  const tableNode = (
     <Table
       className={clsx(
         'mrt-table',
@@ -105,5 +114,42 @@ export const MRT_Table = <TData extends MRT_RowData>({
       )}
       {enableTableFooter && <MRT_TableFooter {...commonTableGroupProps} />}
     </Table>
+  );
+
+  if (!withScrollArea) return tableNode;
+
+  const {
+    ref: scrollAreaRef,
+    viewportRef,
+    ...scrollContainerProps
+  } = {
+    h: '100%',
+    minWidth: '100%',
+    offsetScrollbars: 'present',
+    w: '100%',
+    ...parseFromValuesOrFunc(mantineScrollAreaProps, { table }),
+  } as MRT_ScrollAreaProps & TableScrollContainerProps;
+
+  return (
+    <Table.ScrollContainer
+      {...scrollContainerProps}
+      className={clsx(
+        'mrt-table-scroll-area',
+        scrollContainerProps.className,
+      )}
+      //Mantine hands over the viewport itself, and null when it unmounts, so
+      //the ref does not depend on a class name and never keeps a removed node
+      scrollAreaProps={{
+        ...scrollContainerProps.scrollAreaProps,
+        viewportRef: (node: HTMLDivElement | null) => {
+          table.refs.scrollAreaViewportRef.current = node;
+          assignRef(scrollAreaRef, node);
+          assignRef(viewportRef, node);
+          assignRef(scrollContainerProps.scrollAreaProps?.viewportRef, node);
+        },
+      }}
+    >
+      {tableNode}
+    </Table.ScrollContainer>
   );
 };

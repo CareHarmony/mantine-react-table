@@ -1,0 +1,146 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'v4'
+
+# A new push to the same branch or pull request replaces the run in progress.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  library:
+    name: Lint, typecheck, build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+        working-directory: packages/mantine-react-table
+
+      - name: Typecheck
+        run: pnpm typecheck
+        working-directory: packages/mantine-react-table
+
+      # Also enforces the bundle size limits (size-limit).
+      - name: Build library and locales
+        run: pnpm lib:build
+        working-directory: packages/mantine-react-table
+
+      - name: List the files npm would publish
+        run: npm pack --dry-run
+        working-directory: packages/mantine-react-table
+
+  unit-tests:
+    name: Unit tests (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # No React Compiler. This leg also measures coverage and enforces
+          # the thresholds in vitest.config.ts.
+          - name: compiler off, coverage
+            command: pnpm test:coverage
+          # Compiler on the tests, fixtures and docs examples, like an app
+          # that installs the package from node_modules.
+          - name: compiler on consumer code
+            command: pnpm test:compiler
+          # Compiler also on the library source, like an app that transpiles
+          # the package.
+          - name: compiler on library source
+            command: pnpm test:compiler:all
+          # Compiler on the built bundle.
+          - name: compiler on built bundle
+            command: pnpm lib:build && pnpm test:compiler:dist
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests
+        run: ${{ matrix.command }}
+        working-directory: packages/mantine-react-table
+
+      - name: Add coverage to the job summary
+        if: ${{ always() && hashFiles('packages/mantine-react-table/coverage/coverage-summary.json') != '' }}
+        working-directory: packages/mantine-react-table
+        run: |
+          {
+            echo '### Coverage'
+            echo '| Metric | Covered |'
+            echo '| --- | --- |'
+            jq -r '.total | "| Lines | \(.lines.pct)% |\n| Branches | \(.branches.pct)% |\n| Functions | \(.functions.pct)% |\n| Statements | \(.statements.pct)% |"' coverage/coverage-summary.json
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload coverage report
+        if: ${{ always() && hashFiles('packages/mantine-react-table/coverage/index.html') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: packages/mantine-react-table/coverage
+          retention-days: 14
+
+  docs:
+    name: Docs app and examples
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # The docs app and its 109 example sandboxes import the built library.
+      - name: Build library
+        run: pnpm lib:build
+        working-directory: packages/mantine-react-table
+
+      - name: Lint docs app and examples
+        run: pnpm lint
+        working-directory: apps/mantine-react-table-docs
+
+      # `next build` also typechecks the docs app and the examples.
+      - name: Build docs app
+        run: pnpm docs:build
+        working-directory: apps/mantine-react-table-docs

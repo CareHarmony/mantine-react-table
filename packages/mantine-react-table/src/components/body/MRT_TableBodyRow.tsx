@@ -1,3 +1,5 @@
+'use no memo';
+
 import clsx from 'clsx';
 
 import classes from './MRT_TableBodyRow.module.css';
@@ -14,6 +16,7 @@ import {
 import { Memo_MRT_TableBodyCell, MRT_TableBodyCell } from './MRT_TableBodyCell';
 import { MRT_TableDetailPanel } from './MRT_TableDetailPanel';
 
+import { getMRT_TableStateVersion } from '../../hooks/useMRT_TableSnapshot';
 import {
   type MRT_Cell,
   type MRT_ColumnVirtualizer,
@@ -25,6 +28,7 @@ import {
   type MRT_VirtualItem,
 } from '../../types';
 import { getIsRowSelected } from '../../utils/row.utils';
+import { getMRT_RowView } from '../../utils/snapshot.utils';
 import { parseFromValuesOrFunc } from '../../utils/utils';
 
 interface Props<TData extends MRT_RowData> extends TableTrProps {
@@ -45,13 +49,15 @@ export const MRT_TableBodyRow = <TData extends MRT_RowData>({
   numRows,
   pinnedRowIds,
   renderedRowIndex = 0,
-  row,
+  row: rowProp,
   rowVirtualizer,
   table,
   tableProps,
   virtualRow,
   ...rest
 }: Props<TData>) => {
+  //a view has a new identity per table reference, which compiled render callbacks need
+  const row = getMRT_RowView(table, rowProp);
   const {
     getState,
     options: {
@@ -84,6 +90,8 @@ export const MRT_TableBodyRow = <TData extends MRT_RowData>({
   const { virtualColumns, virtualPaddingLeft, virtualPaddingRight } =
     columnVirtualizer ?? {};
 
+  //the placeholder row for an empty table has no data to show in a detail panel
+  const isEmptyRow = row.id === 'mrt-row-empty';
   const isRowSelected = getIsRowSelected({ row, table });
   const isRowPinned = enableRowPinning && row.getIsPinned();
   const isRowStickyPinned =
@@ -169,6 +177,7 @@ export const MRT_TableBodyRow = <TData extends MRT_RowData>({
         ref={(node: HTMLTableRowElement) => {
           if (node) {
             rowRef.current = node;
+            //also registers the row with the virtualizer's ResizeObserver
             rowVirtualizer?.measureElement(node);
           }
         }}
@@ -191,7 +200,7 @@ export const MRT_TableBodyRow = <TData extends MRT_RowData>({
                 }`
               : undefined,
           '--mrt-virtual-row-start': virtualRow
-            ? `${virtualRow.start}`
+            ? `${virtualRow.start}px`
             : undefined,
         }}
         className={clsx(
@@ -241,7 +250,7 @@ export const MRT_TableBodyRow = <TData extends MRT_RowData>({
           <Box component="td" display="flex" w={virtualPaddingRight} />
         ) : null}
       </TableTr>
-      {renderDetailPanel && !row.getIsGrouped() && (
+      {renderDetailPanel && !row.getIsGrouped() && !isEmptyRow && (
         <MRT_TableDetailPanel
           parentRowRef={rowRef}
           renderedRowIndex={renderedRowIndex}
@@ -256,7 +265,14 @@ export const MRT_TableBodyRow = <TData extends MRT_RowData>({
   );
 };
 
+//the state version changes whenever table state changes, so a memoized row
+//still follows row selection, density, editing and so on. The `table`
+//reference is not compared: an inline option gives a new one on every render.
 export const Memo_MRT_TableBodyRow = memo(
   MRT_TableBodyRow,
-  (prev, next) => prev.row === next.row,
+  (prev, next) =>
+    prev.row === next.row &&
+    getMRT_TableStateVersion(prev.table) ===
+      getMRT_TableStateVersion(next.table) &&
+    prev.virtualRow?.start === next.virtualRow?.start,
 ) as typeof MRT_TableBodyRow;

@@ -1,12 +1,12 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css'; //if using mantine date picker features
-import 'mantine-react-table/styles.css'; //make sure MRT styles were imported in your app root (once)
+import '@careharmony/mantine-react-table-ng/styles.css'; //make sure MRT styles were imported in your app root (once)
 import { useMemo, useState } from 'react';
 import {
   MantineReactTable,
-  MRT_TableOptions,
-  MRT_ColumnDef,
-} from 'mantine-react-table';
+  type MRT_TableOptions,
+  type MRT_ColumnDef,
+} from '@careharmony/mantine-react-table-ng';
 import { data, type Person } from './makeData';
 
 const Example = () => {
@@ -45,10 +45,11 @@ const Example = () => {
     row,
     values,
   }) => {
-    //if using flat data and simple accessorKeys/ids, you can just do a simple assignment here.
-    tableData[row.index] = values;
     //send/receive api updates here
-    setTableData([...tableData]);
+    //replace the edited row, React state must not be mutated
+    setTableData((prev) =>
+      prev.map((person, index) => (index === row.index ? values : person)),
+    );
     table.setEditingRow(null); //exit editing mode
   };
 

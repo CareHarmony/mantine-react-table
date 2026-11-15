@@ -1,12 +1,12 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css'; //if using mantine date picker features
-import 'mantine-react-table/styles.css'; //make sure MRT styles were imported in your app root (once)
+import '@careharmony/mantine-react-table-ng/styles.css'; //make sure MRT styles were imported in your app root (once)
 import { useMemo } from 'react';
 import {
   MantineReactTable,
   useMantineReactTable,
   type MRT_ColumnDef,
-} from 'mantine-react-table';
+} from '@careharmony/mantine-react-table-ng';
 import { citiesList, data, usStateList, type Person } from './makeData';
 
 const Example = () => {

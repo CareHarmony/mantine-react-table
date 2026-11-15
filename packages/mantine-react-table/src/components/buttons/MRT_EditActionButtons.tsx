@@ -1,3 +1,5 @@
+'use no memo';
+
 import clsx from 'clsx';
 
 import classes from './MRT_EditActionButtons.module.css';
@@ -53,16 +55,26 @@ export const MRT_EditActionButtons = <TData extends MRT_RowData>({
   };
 
   const handleSubmitRow = () => {
-    //look for auto-filled input values
-    Object.values(editInputRefs?.current)
-      .filter((inputRef) => row.id === inputRef?.name?.split('_')?.[0])
-      ?.forEach((input) => {
+    //look for auto-filled input values. A browser can fill an input without
+    //firing the change event that saves the value to the row cache.
+    const inputNamePrefix = `${row.id}_`; //input names are cell ids: rowId_columnId
+    const valuesCache = row._valuesCache as Record<string, unknown>;
+    Object.values(editInputRefs?.current ?? {})
+      .filter((input) => input?.name?.startsWith(inputNamePrefix))
+      .forEach((input) => {
+        const columnId = input.name.slice(inputNamePrefix.length);
+        const editVariant = table.getColumn(columnId)?.columnDef.editVariant;
+        //select inputs show the option label, not the value, so only text inputs are read
+        const isTextInput = !editVariant || editVariant === 'text';
         if (
-          input.value !== undefined &&
-          Object.hasOwn(row?._valuesCache as object, input.name)
+          isTextInput &&
+          Object.hasOwn(valuesCache, columnId) &&
+          //a number or other parsed value is the consumer's, and its text form can differ
+          (typeof valuesCache[columnId] === 'string' ||
+            valuesCache[columnId] == null) &&
+          input.value !== String(valuesCache[columnId] ?? '')
         ) {
-          // @ts-ignore
-          row._valuesCache[input.name] = input.value;
+          valuesCache[columnId] = input.value;
         }
       });
     if (isCreating)
