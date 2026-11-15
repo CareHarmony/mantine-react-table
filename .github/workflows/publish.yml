@@ -2,8 +2,15 @@ name: Publish to npm
 
 # Publishes packages/mantine-react-table as @careharmony/mantine-react-table-ng.
 #
-# Setup, once: add an npm automation token with publish rights as the
-# repository secret NPM_TOKEN.
+# Authentication is npm trusted publishing (OIDC). No npm token is stored.
+#
+# Setup, once:
+# 1. The package must exist on npm before a trusted publisher can be added,
+#    so publish the first version by hand: `npm login`, then `npm publish`
+#    from packages/mantine-react-table.
+# 2. On npmjs.com open the package, Settings, Trusted Publisher, GitHub Actions:
+#    organization CareHarmony, repository mantine-react-table, workflow
+#    filename publish.yml, no environment. Allow the "npm publish" action.
 #
 # To release: set "version" in packages/mantine-react-table/package.json, merge
 # to v4, then publish a GitHub release whose tag is "v" plus that version
@@ -25,7 +32,8 @@ concurrency:
 
 permissions:
   contents: read
-  # Lets npm attach a provenance statement that links the package to this run.
+  # Lets npm exchange this run's identity for a short-lived publish credential,
+  # and attach a provenance statement that links the package to this run.
   id-token: write
 
 jobs:
@@ -47,6 +55,11 @@ jobs:
           node-version: 22
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org'
+
+      # Trusted publishing needs npm 11.5.1 or later. Node 22 ships npm 10.
+      - name: Update npm
+        run: npm install --global npm@latest
+        working-directory: .
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -83,11 +96,9 @@ jobs:
       # tests in all four React Compiler modes before anything is uploaded.
       - name: Publish (dry run)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.dry-run }}
-        run: pnpm publish --dry-run --no-git-checks --access public --tag ${{ steps.version.outputs.tag }}
+        run: npm publish --dry-run --access public --tag ${{ steps.version.outputs.tag }}
 
       - name: Publish
         if: ${{ github.event_name == 'release' || !inputs.dry-run }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
-        run: pnpm publish --no-git-checks --access public --tag ${{ steps.version.outputs.tag }}
+        # npm, not pnpm: only `npm publish` can authenticate through OIDC.
+        run: npm publish --access public --tag ${{ steps.version.outputs.tag }}

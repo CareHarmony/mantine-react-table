@@ -90,7 +90,9 @@ Rules that follow from this:
 
 ## Releases
 
-- `publish.yml` publishes on a GitHub release whose tag is `v` plus the version in `packages/mantine-react-table/package.json`. It needs the `NPM_TOKEN` repository secret.
+- `publish.yml` publishes on a GitHub release whose tag is `v` plus the version in `packages/mantine-react-table/package.json`. It authenticates with npm trusted publishing (OIDC), so the repository holds no npm token. The trusted publisher is set on npmjs.com in the package settings: organization `CareHarmony`, repository `mantine-react-table`, workflow `publish.yml`, with the `npm publish` action allowed.
+- Trusted publishing needs npm 11.5.1 or later and Node 22.14 or later, and only works through `npm publish`. `pnpm publish` cannot use it.
+- Renaming `publish.yml` breaks publishing until the trusted publisher entry is updated.
 - A prerelease version publishes under its prerelease name as dist-tag (`4.0.0-beta.0` gives `beta`). Other versions publish as `latest`.
 - `prepublishOnly` runs lint, typecheck, the build and all four test modes.
 - `visual.yml` is manual and runs on a Windows runner.
