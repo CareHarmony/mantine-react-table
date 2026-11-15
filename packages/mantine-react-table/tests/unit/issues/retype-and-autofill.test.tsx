@@ -2,7 +2,7 @@ import { columns, people } from '../fixtures/data';
 import { renderWithMantine } from '../fixtures/render';
 
 import { MantineReactTable } from '@careharmony/mantine-react-table-ng';
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 const bodyRowCount = () =>
@@ -63,7 +63,9 @@ describe(`retyped filters and auto-filled edits [compiler=${__MRT_REACT_COMPILER
     await user.click(screen.getAllByRole('button', { name: 'Edit' })[0]);
     //browser autofill writes the DOM value directly
     screen.getByPlaceholderText<HTMLInputElement>('City').value = 'Autofilled';
-    await user.click(screen.getByRole('button', { name: 'Save' }));
+    //a synchronous click: React writes the state value back to the input on any
+    //re-render, and `user.click` yields long enough for one to happen
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
     expect(onEditingRowSave).toHaveBeenCalledTimes(1);
     //untouched values keep their type: age stays a number
